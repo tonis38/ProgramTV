@@ -8,7 +8,7 @@ package com.teamEclipse;
  *
  */
 
-class TVNetwork {
+public class TVNetwork {
 	private int ID;
 	private String name;
 	private String country;

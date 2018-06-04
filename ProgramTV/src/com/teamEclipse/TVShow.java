@@ -13,7 +13,7 @@ import java.util.*;
  *
  */
 
-class TVShow {
+public class TVShow {
 	public static enum Status { UNKNOWN (0), FINISHED(1), RUNNING(2), NOT_YET_AIRED(3);
 		private final int index;
 		Status(int index) {
