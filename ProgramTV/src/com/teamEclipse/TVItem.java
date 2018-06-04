@@ -19,7 +19,7 @@ public class TVItem {
 	private String name;
 	private int season;
 	private int number;
-	private Date airDate;
+	private String airDate;
 	private int runtime;
 	private String image;
 	private String summary;
@@ -42,7 +42,7 @@ public class TVItem {
 	public void setName(String name) {this.name = name;}
 	public void setSeason(int season) {this.season = season;}
 	public void setNumber(int number) {this.number = number;}
-	public void setAirDate(Date airDate) {this.airDate = airDate;}
+	public void setAirDate(String airDate) {this.airDate = airDate;}
 	public void setRuntime(int runtime) {this.runtime = runtime;}
 	public void setImage(String image) {this.image = image;}
 	public void setSummary(String summary) {this.summary = summary;}
@@ -53,7 +53,7 @@ public class TVItem {
 	public String getName() {return this.name;}
 	public int getSeason() {return this.season;}
 	public int getNumber() {return this.number;}
-	public Date getAirDate() {return this.airDate;}
+	public String getAirDate() {return this.airDate;}
 	public int getRuntime() {return this.runtime;}
 	public String getImage() {return this.image;}
 	public String getSummary() {return this.summary;}

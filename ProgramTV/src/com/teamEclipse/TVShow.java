@@ -1,5 +1,7 @@
 package com.teamEclipse;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -14,22 +16,46 @@ import java.util.*;
  */
 
 class TVShow {
-	public static enum StatusList { UNKNOWN, FINISHED, RUNNING, NOT_YET_AIRED};
-	public static enum Day {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY};
-	public static enum Type { OTHER, COMEDY, SCI_FI, HORROR, ROMANCE, ACTION, THRILLER, DRAMA, MYSTERY, CRIME, ANIMATION, 
-						ADVENTURE, FANTASY, COMEDY_ROMANCE, ACTION_COMEDY, SUPERHERO,  TALK_SHOW, NEWS, SPORTS, REALITY};
+	public static enum Status { UNKNOWN (0), FINISHED(1), RUNNING(2), NOT_YET_AIRED(3);
+		private final int index;
+		Status(int index) {
+	        this.index = index;
+	    }
+		public int getValue() {
+			return this.index;
+		}
+	}
+	public static enum Day { MONDAY(1), TUESDAY(2), WEDNESDAY(4), THURSDAY(8), FRIDAY(16), SATURDAY(32), SUNDAY(64);		
+		private final int index;
+		Day(int index) {
+	        this.index = index;
+	    }
+		public int getValue() {
+			return this.index;
+		}
+	}
+	public static enum Type { OTHER(0), COMEDY(1), SCI_FI(2), HORROR(3), ROMANCE(4), ACTION(5), THRILLER(6), DRAMA(7), MYSTERY(8), CRIME(9), ANIMATION(10), 
+		ADVENTURE(11), FANTASY(12), COMEDY_ROMANCE(13), ACTION_COMEDY(14), SUPERHERO(15),  TALK_SHOW(16), NEWS(17), SPORTS(18), REALITY(19);
+		private final int index;
+		Type(int index){
+			this.index = index;
+		}
+		public int getValue() {
+			return this.index;
+		}
+	}
 	
 	private int ID;
 	private String name;
 	private String language;
-	private EnumSet<Type> types;
-	private StatusList status;
+	private Type type;
+	private Status status;
 	private int runtime;
-	private Date premiered;
+	private String premiered;
 	private String officialSite;
 	private String summary;
 	
-	private Date airtime;
+	private String airtime;
 	private EnumSet<Day> days;
 	
 	private double rating;
@@ -40,8 +66,8 @@ class TVShow {
 		this.ID = 0;
 		this.name = null;
 		this.language = null;
-		this.types = null;
-		this.status = StatusList.UNKNOWN;
+		this.type = null;
+		this.status = Status.UNKNOWN;
 		this.runtime = 0;
 		this.premiered = null;
 		this.officialSite = null;
@@ -56,13 +82,13 @@ class TVShow {
 	public void setID(int ID) {this.ID = ID;}
 	public void setName(String name) {this.name = name;}
 	public void setLanguage(String language) {this.language = language;}
-	public void addType(Type type) {this.types.add(type);}
-	public void setStatus(StatusList status) { this.status = status;}
+	public void setType(Type type) {this.type = type;}
+	public void setStatus(Status status) { this.status = status;}
 	public void setRuntime(int runtime) {this.runtime = runtime;}
-	public void setPremiereDate(Date premiered) {this.premiered = premiered;}
+	public void setPremiereDate(String premiered) {this.premiered = premiered;}
 	public void setOfficialSite(String site) {this.officialSite = site;}
 	public void setSummary(String summary) {this.summary = summary;}
-	public void setAirtime(Date airtime) {this.airtime = airtime;}
+	public void setAirtime(String airtime) {this.airtime = airtime;}
 	public void addDay(Day day) {this.days.add(day);}
 	public void setRating(double rating) {this.rating = rating;}
 	public void setImage(String image) {this.image = image;}
@@ -71,20 +97,26 @@ class TVShow {
 	public int getID() {return this.ID;}
 	public String getName() {return this.name;}
 	public String getLanguage() {return this.language;}
-	public EnumSet<Type> getTypes() {return this.types;}
-	public StatusList getStatus() {return this.status;}
+	public Type getType() {return this.type;}
+	public Status getStatus() {return this.status;}
 	public int getRuntime() {return this.runtime;}
-	public Date getPremiereDate() {return this.premiered;}
+	public String getPremiereDate() {return this.premiered;}
 	public String getOfficialSite() {return this.officialSite;}
 	public String getSummary() {return this.summary;}
-	public Date getAirtime() {return this.airtime;}
+	public String getAirtime() {return this.airtime;}
 	public EnumSet<Day> getDays() {return this.days;}
+	public int getDaysN() {
+		int value = 0;
+	    for (Day day : days) {
+	        value |= day.getValue();
+	    }
+	    return value;
+	}
 	public double getRating() {return this.rating;}
 	public String getImage() {return this.image;}
 	public TVNetwork getNetwork() {return this.network;}
 	
 	public void removeDay(Day day) {this.days.remove(day);}
-	public void removeType(Type type) {this.types.remove(type);}
 	
 
 }
