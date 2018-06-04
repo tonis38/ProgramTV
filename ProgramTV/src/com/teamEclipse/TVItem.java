@@ -23,7 +23,9 @@ public class TVItem {
 	private int runtime;
 	private String image;
 	private String summary;
+	private String network;
 	private TVShow show;
+	
 	
 	
 	public TVItem(){
@@ -35,6 +37,7 @@ public class TVItem {
 		this.runtime = 0;
 		this.image = null;
 		this.summary = null;
+		this.network = null;
 		this.show = null;
 	}
 	
@@ -46,6 +49,7 @@ public class TVItem {
 	public void setRuntime(int runtime) {this.runtime = runtime;}
 	public void setImage(String image) {this.image = image;}
 	public void setSummary(String summary) {this.summary = summary;}
+	public void setNetwork(String network) {this.network = network;}
 	public void setShow(TVShow show) {this.show = show;}
 	
 
@@ -57,6 +61,7 @@ public class TVItem {
 	public int getRuntime() {return this.runtime;}
 	public String getImage() {return this.image;}
 	public String getSummary() {return this.summary;}
+	public String getNetwork() {return this.network;}
 	public TVShow getShow() {return this.show;} 
 	
 }
