@@ -1,5 +1,7 @@
 package com.parser;
 
+import com.teamEclipse.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +13,8 @@ import java.util.Iterator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.teamEclipse.*;
 
 public class TricolorTVParser {
 
@@ -38,22 +42,29 @@ public class TricolorTVParser {
   public static void main(String[] args) throws IOException, JSONException {
     JSONObject json = readJsonFromUrl("https://www.tricolor.tv/ajax/program/grid.php?channel=select&channel-type=20&channel-name=0&channel-format=0&date_for_now=&day=&type=grid&favoriteChannels=undefined");
     JSONObject progJson = json.getJSONObject("program");
-
+    
+    
     Iterator<String> keys = progJson.keys();
     
     //Get all objects
     while(keys.hasNext()){
     	
+    	TVItem item = new TVItem();
+   	
     	String key = keys.next();							//Get key
     	
     	JSONObject program = progJson.getJSONObject(key);	//Get object from key
     	
     	//Get data from object
-    	String channel = program.getString("title");
-    	String time = program.getString("start");
+    	
+    	item.setNetwork(program.getString("channel"));
+       	item.setName(program.getString("title"));
+    	item.setAirDate(program.getString("start"));
+    	item.setImage(program.getString("logo"));
+    	item.setSummary(program.getString("descr"));
     	
     	
-    	System.out.printf("Program name: %s. \t Start: %s.\n", channel, time);
+    	System.out.printf("Program name: %s. \t Start: %s.\n", item.getName(), item.getAirDate());
     }
 
     
