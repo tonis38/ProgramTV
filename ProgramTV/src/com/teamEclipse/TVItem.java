@@ -1,6 +1,5 @@
 package com.teamEclipse;
 
-import java.util.*;
 
 /**
  * 
@@ -24,7 +23,7 @@ public class TVItem {
 	private String image;
 	private String summary;
 	private String network;
-	private TVShow show;
+	private String show;
 	
 	
 	
@@ -41,6 +40,19 @@ public class TVItem {
 		this.show = null;
 	}
 	
+	public TVItem(int ID, String name, int season, int number, String airDate, int runtime, String image, String summary, String network, String show) {
+		this.ID = ID;
+		this.name = name;
+		this.season = season;
+		this.number = number;
+		this.airDate = airDate;
+		this.runtime = runtime;
+		this.image = image;
+		this.summary = summary;
+		this.network = network;
+		this.show = show;
+	}
+	
 	public void setID(int ID) {this.ID = ID;}
 	public void setName(String name) {this.name = name;}
 	public void setSeason(int season) {this.season = season;}
@@ -50,7 +62,7 @@ public class TVItem {
 	public void setImage(String image) {this.image = image;}
 	public void setSummary(String summary) {this.summary = summary;}
 	public void setNetwork(String network) {this.network = network;}
-	public void setShow(TVShow show) {this.show = show;}
+	public void setShow(String show) {this.show = show;}
 	
 
 	public int getID() {return this.ID;}
@@ -62,6 +74,6 @@ public class TVItem {
 	public String getImage() {return this.image;}
 	public String getSummary() {return this.summary;}
 	public String getNetwork() {return this.network;}
-	public TVShow getShow() {return this.show;} 
+	public String getShow() {return this.show;} 
 	
 }

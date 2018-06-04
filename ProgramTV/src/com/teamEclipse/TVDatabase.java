@@ -6,13 +6,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
 import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.teamEclipse.TVItem;
 import com.teamEclipse.TVNetwork;
 import com.teamEclipse.TVShow;
-import com.teamEclipse.TVShow.*;
+import com.teamEclipse.TVShow.Day;
+import com.teamEclipse.TVShow.Status;
+import com.teamEclipse.TVShow.Type;
 
 public class TVDatabase {
 
@@ -43,7 +46,7 @@ public class TVDatabase {
 	
     private boolean createTables() {
     	try {
-    		stat.execute("CREATE TABLE IF NOT EXISTS tvitems(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), season INT, number INT, airDate VARCHAR(10), runtime INT, image VARCHAR(255), summary VARCHAR(1023), tvshow INT)");
+    		stat.execute("CREATE TABLE IF NOT EXISTS tvitems(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), season INT, number INT, airDate VARCHAR(10), runtime INT, image VARCHAR(255), summary VARCHAR(1023), network VARCHAR(255), tvshow VARCHAR(255)");
     		stat.execute("CREATE TABLE IF NOT EXISTS tvnetworks(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), country VARCHAR(255), logo VARCHAR(255))");
     		stat.execute("CREATE TABLE IF NOT EXISTS tvshows(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), language VARCHAR(255), types BLOB, status VARCHAR(255), runtime INT, premiered VARCHAR(10), officialsite VARCHAR(255), summary VARCHAR(1023), airtime VARCHAR(10), days INT, rating BLOB, image VARCHAR(255), network VARCHAR(255)");
     	} catch (SQLException e) {
@@ -58,7 +61,7 @@ public class TVDatabase {
     public boolean insertItems(TVItem item) {
     	try {
     		PreparedStatement prepStmt = conn.prepareStatement(
-    				"insert into tvitems values (NULL, ?, ?, ?, ?, ?, ?, ?, ?);");
+    				"insert into tvitems values (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
     		prepStmt.setString(1, item.getName());
     		prepStmt.setInt(2, item.getSeason());
     		prepStmt.setInt(3, item.getNumber());
@@ -66,7 +69,8 @@ public class TVDatabase {
     		prepStmt.setInt(5, item.getRuntime());
     		prepStmt.setString(6, item.getImage());
     		prepStmt.setString(7, item.getSummary());
-    		prepStmt.setInt(8, item.getShow().getID());
+    		prepStmt.setString(8, item.getNetwork());
+    		prepStmt.setString(9, item.getShow());
     		prepStmt.execute();
     	} catch (SQLException e) {
             System.err.println("Error while inserting TVItem");
@@ -105,7 +109,7 @@ public class TVDatabase {
     		prepStmt.setString(7, show.getOfficialSite());
     		prepStmt.setString(8, show.getSummary());
     		prepStmt.setString(9, show.getAirtime());
-    		prepStmt.setInt(10, show.getDaysN());
+    		prepStmt.setInt(10, show.daysToNumber());
     		prepStmt.setDouble(11, show.getRating());
     		prepStmt.setString(12, show.getImage());
     		prepStmt.setString(13, show.getNetwork());
@@ -116,5 +120,108 @@ public class TVDatabase {
         }
     	
     	return true;
+    }
+    
+    public List<TVItem> selectTVItems(){
+    	List<TVItem> items = new LinkedList<TVItem>();
+    	
+    	try {
+    		ResultSet result = stat.executeQuery("SELECT * FROM tvitems");
+    		int ID;
+    		String name;
+    		int season;
+    		int number;
+    		String airDate;
+    		int runtime;
+    		String image;
+    		String summary;
+    		String network;
+    		String show;
+    		while(result.next()) {
+    			ID = result.getInt("id");
+    			name = result.getString("name");
+    			season = result.getInt("season");
+    			number = result.getInt("number");
+    			airDate = result.getString("airDate");
+    			runtime = result.getInt("runtime");
+    			image = result.getString("image");
+    			summary = result.getString("summary");
+    			network = result.getString("network");
+    			show = result.getString("tvshow");
+        		items.add(new TVItem(ID, name, season, number, airDate, runtime, image, summary, network, show));
+    		}
+    	} catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    	return items;
+    }
+    public List<TVNetwork> selectTVNetworks(){
+    	List<TVNetwork> networks = new LinkedList<TVNetwork>();
+
+    	try {
+    		ResultSet result = stat.executeQuery("SELECT * FROM tvnetworks");
+    		int ID;
+    		String name;
+    		String country;
+    		String logo;
+    		while(result.next()) {
+    			ID = result.getInt("id");
+    			name = result.getString("name");
+    			country = result.getString("country");
+    			logo = result.getString("logo");
+    			networks.add(new TVNetwork(ID, name, country, logo));
+    		}
+    		
+    	} catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    	
+    	return networks;
+    }
+    public List<TVShow> selectTVShows(){
+    	List<TVShow> shows = new LinkedList<TVShow>();
+    	
+    	try {
+    		ResultSet result = stat.executeQuery("SELECT * FROM tvnetworks");
+        	int ID;
+        	String name;
+        	String language;
+        	Type type;
+        	Status status;
+        	int runtime;
+        	String premiered;
+        	String officialSite;
+        	String summary;
+        	String airtime;
+        	EnumSet<Day> days;
+        	double rating;
+        	String image;
+        	String network;
+        	
+        	while(result.next()) {
+    			ID = result.getInt("id");
+    			name = result.getString("name");
+        		language = result.getString("language");
+        		type = TVShow.Type.fromInteger(result.getInt("type"));
+        		status = TVShow.Status.fromInteger(result.getInt("status"));
+        		runtime = result.getInt("runtime");
+        		premiered = result.getString("premiered");
+        		officialSite = result.getString("officialsite");
+        		summary = result.getString("summary");
+        		airtime = result.getString("airtime");
+        		days = new TVShow().numberToDays(result.getInt("days"));
+        		rating = result.getDouble("rating");
+        		image = result.getString("image");
+        		network = result.getString("network");
+        		shows.add(new TVShow(ID, name, language, type, status, runtime, premiered, officialSite, summary, airtime, days, rating, image, network));
+        	}
+    	} catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    	
+    	return shows;
     }
 }

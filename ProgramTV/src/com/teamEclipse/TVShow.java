@@ -22,6 +22,16 @@ public class TVShow {
 		public int getValue() {
 			return this.index;
 		}
+		public static Status fromInteger(int x) {
+			Status[] statuses = Status.values();
+            for(int i = 0; i < statuses.length; i++)
+            {
+                if(statuses[i].Compare(x))
+                    return statuses[i];
+            }
+            return Status.UNKNOWN;
+	    }
+        private boolean Compare(int i){return index == i;}
 	}
 	public static enum Day { MONDAY(1), TUESDAY(2), WEDNESDAY(4), THURSDAY(8), FRIDAY(16), SATURDAY(32), SUNDAY(64);		
 		private final int index;
@@ -41,6 +51,16 @@ public class TVShow {
 		public int getValue() {
 			return this.index;
 		}
+		public static Type fromInteger(int x) {
+			Type[] Types = Type.values();
+            for(int i = 0; i < Types.length; i++)
+            {
+                if(Types[i].Compare(x))
+                    return Types[i];
+            }
+            return Type.OTHER;
+	    }
+        private boolean Compare(int i){return index == i;}
 	}
 	
 	private int ID;
@@ -71,10 +91,27 @@ public class TVShow {
 		this.officialSite = null;
 		this.summary = null;
 		this.airtime = null;
-		this.days = null;
-		this.rating = 0;
+		this.days = EnumSet.noneOf(Day.class);
+		this.rating = 0.0;
 		this.image = null;
 		this.network = null;
+	}
+	
+	public TVShow(int ID, String name, String language, Type type, Status status, int runtime, String premiered, String officialSite, String summary, String airtime, EnumSet<Day> days, double rating, String image, String network) {
+		this.ID = ID;
+		this.name = name;
+		this.language = language;
+		this.type = type;
+		this.status = status;
+		this.runtime = runtime;
+		this.premiered = premiered;
+		this.officialSite = officialSite;
+		this.summary = summary;
+		this.airtime = airtime;
+		this.days = days;
+		this.rating = rating;
+		this.image = image;
+		this.network = network;
 	}
 	
 	public void setID(int ID) {this.ID = ID;}
@@ -92,6 +129,18 @@ public class TVShow {
 	public void setImage(String image) {this.image = image;}
 	public void setNetwork(String network) {this.network = network;}
 	
+
+	public EnumSet<Day> numberToDays(int number) {
+		EnumSet<Day> days = EnumSet.noneOf(Day.class);
+		
+	    for (Day day : EnumSet.allOf(Day.class)) {
+	        if ((number & day.getValue()) != 0) {
+	            days.add(day);
+	        }
+	    }
+	    return days;
+	}
+	
 	public int getID() {return this.ID;}
 	public String getName() {return this.name;}
 	public String getLanguage() {return this.language;}
@@ -103,9 +152,9 @@ public class TVShow {
 	public String getSummary() {return this.summary;}
 	public String getAirtime() {return this.airtime;}
 	public EnumSet<Day> getDays() {return this.days;}
-	public int getDaysN() {
+	public int daysToNumber() {
 		int value = 0;
-	    for (Day day : days) {
+	    for (Day day : this.days) {
 	        value |= day.getValue();
 	    }
 	    return value;
