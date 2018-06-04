@@ -45,7 +45,7 @@ public class TVDatabase {
     	try {
     		stat.execute("CREATE TABLE IF NOT EXISTS tvitems(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), season INT, number INT, airDate VARCHAR(10), runtime INT, image VARCHAR(255), summary VARCHAR(1023), tvshow INT)");
     		stat.execute("CREATE TABLE IF NOT EXISTS tvnetworks(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), country VARCHAR(255), logo VARCHAR(255))");
-    		stat.execute("CREATE TABLE IF NOT EXISTS tvshows(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), language VARCHAR(255), types BLOB, status VARCHAR(255), runtime INT, premiered VARCHAR(10), officialsite VARCHAR(255), summary VARCHAR(1023), airtime VARCHAR(10), days INT, rating BLOB, image VARCHAR(255), network INT)");
+    		stat.execute("CREATE TABLE IF NOT EXISTS tvshows(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), language VARCHAR(255), types BLOB, status VARCHAR(255), runtime INT, premiered VARCHAR(10), officialsite VARCHAR(255), summary VARCHAR(1023), airtime VARCHAR(10), days INT, rating BLOB, image VARCHAR(255), network VARCHAR(255)");
     	} catch (SQLException e) {
             System.err.println("Error while creating tables");
             e.printStackTrace();
@@ -108,7 +108,7 @@ public class TVDatabase {
     		prepStmt.setInt(10, show.getDaysN());
     		prepStmt.setDouble(11, show.getRating());
     		prepStmt.setString(12, show.getImage());
-    		prepStmt.setInt(13, show.getNetwork().getID());
+    		prepStmt.setString(13, show.getNetwork());
     	} catch (SQLException e) {
             System.err.println("Error while inserting TVShow");
             e.printStackTrace();

@@ -1,7 +1,5 @@
 package com.teamEclipse;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -60,7 +58,7 @@ class TVShow {
 	
 	private double rating;
 	private String image;
-	private TVNetwork network;
+	private String network;
 	
 	public TVShow() {
 		this.ID = 0;
@@ -92,7 +90,7 @@ class TVShow {
 	public void addDay(Day day) {this.days.add(day);}
 	public void setRating(double rating) {this.rating = rating;}
 	public void setImage(String image) {this.image = image;}
-	public void setNetwork(TVNetwork network) {this.network = network;}
+	public void setNetwork(String network) {this.network = network;}
 	
 	public int getID() {return this.ID;}
 	public String getName() {return this.name;}
@@ -114,7 +112,7 @@ class TVShow {
 	}
 	public double getRating() {return this.rating;}
 	public String getImage() {return this.image;}
-	public TVNetwork getNetwork() {return this.network;}
+	public String getNetwork() {return this.network;}
 	
 	public void removeDay(Day day) {this.days.remove(day);}
 	
