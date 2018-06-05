@@ -1,13 +1,7 @@
 package com.parser;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,16 +14,32 @@ public class CPParser {
     print("Fetching %s...", url);
     
     Document doc = Jsoup.connect(url).get();
-    Elements channels = doc.select("table");		//Extract channels from site
+    Elements table = doc.select("table");		//Extract channels from site
     
-    Element table = channels.get(2);				//Get only TV Program data table
+    Element TVtable = table.get(2);				//Get only TV Program data table
     
-    Elements rows = table.select("tr");
-    Elements headers = rows.select("img[alt]");
+    Element channels = TVtable.select("tr").first();	//Get TV channels name
+    Elements headers = channels.select("img[alt]");
     
-    print("%s", headers.get(0).attr("alt"));
-   
+    Elements rows = TVtable.select("tr.rowWithoutHeader");
     
+    for (int i = 0; i < headers.size(); i++) {
+    	for(int j = 0; j < rows.size(); j++) {
+    		Element row = rows.get(j);
+    		Element column = row.select("td").get(i);
+    		
+    		Elements programs = column.select("div.newPtvTableProgram");
+    		
+    		for(Element program : programs) {
+    		
+    		String time = program.select("div.newPtvTableProgramLeft , div.newPtvTableProgramLeftFuture").text();
+    		String name = program.select("div.newPtvTableProgramRight > a").text();
+    		String desc = program.select("div.newPtvTableProgramRight > span").text();
+    		
+    		print("Channel name: %s. Program name: %s. Time: %s. Description: %s.", headers.get(i).attr("alt"), name, time, desc);
+    		}
+    	}
+    }    
         
 	}
     private static void print(String msg, Object... args) {
