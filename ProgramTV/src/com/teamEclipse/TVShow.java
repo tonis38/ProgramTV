@@ -129,17 +129,6 @@ public class TVShow {
 	public void setImage(String image) {this.image = image;}
 	public void setNetwork(String network) {this.network = network;}
 	
-
-	public EnumSet<Day> numberToDays(int number) {
-		EnumSet<Day> days = EnumSet.noneOf(Day.class);
-		
-	    for (Day day : EnumSet.allOf(Day.class)) {
-	        if ((number & day.getValue()) != 0) {
-	            days.add(day);
-	        }
-	    }
-	    return days;
-	}
 	
 	public int getID() {return this.ID;}
 	public String getName() {return this.name;}
@@ -152,6 +141,23 @@ public class TVShow {
 	public String getSummary() {return this.summary;}
 	public String getAirtime() {return this.airtime;}
 	public EnumSet<Day> getDays() {return this.days;}
+	public double getRating() {return this.rating;}
+	public String getImage() {return this.image;}
+	public String getNetwork() {return this.network;}
+	
+	public void removeDay(Day day) {this.days.remove(day);}
+
+
+	public EnumSet<Day> numberToDays(int number) {
+		EnumSet<Day> days = EnumSet.noneOf(Day.class);
+		
+	    for (Day day : EnumSet.allOf(Day.class)) {
+	        if ((number & day.getValue()) != 0) {
+	            days.add(day);
+	        }
+	    }
+	    return days;
+	}
 	public int daysToNumber() {
 		int value = 0;
 	    for (Day day : this.days) {
@@ -159,11 +165,6 @@ public class TVShow {
 	    }
 	    return value;
 	}
-	public double getRating() {return this.rating;}
-	public String getImage() {return this.image;}
-	public String getNetwork() {return this.network;}
-	
-	public void removeDay(Day day) {this.days.remove(day);}
 	
 
 }
