@@ -19,7 +19,7 @@ public class TVItem {
 	private int season;
 	private int number;
 	private String airDate;
-	private int runtime;
+	private String runtime;
 	private String image;
 	private String summary;
 	private String network;
@@ -33,14 +33,14 @@ public class TVItem {
 		this.season = 0;
 		this.number = 0;
 		this.airDate = null;
-		this.runtime = 0;
+		this.runtime = null;
 		this.image = null;
 		this.summary = null;
 		this.network = null;
 		this.show = null;
 	}
 	
-	public TVItem(int ID, String name, int season, int number, String airDate, int runtime, String image, String summary, String network, String show) {
+	public TVItem(int ID, String name, int season, int number, String airDate, String runtime, String image, String summary, String network, String show) {
 		this.ID = ID;
 		this.name = name;
 		this.season = season;
@@ -58,7 +58,7 @@ public class TVItem {
 	public void setSeason(int season) {this.season = season;}
 	public void setNumber(int number) {this.number = number;}
 	public void setAirDate(String airDate) {this.airDate = airDate;}
-	public void setRuntime(int runtime) {this.runtime = runtime;}
+	public void setRuntime(String runtime) {this.runtime = runtime;}
 	public void setImage(String image) {this.image = image;}
 	public void setSummary(String summary) {this.summary = summary;}
 	public void setNetwork(String network) {this.network = network;}
@@ -70,7 +70,7 @@ public class TVItem {
 	public int getSeason() {return this.season;}
 	public int getNumber() {return this.number;}
 	public String getAirDate() {return this.airDate;}
-	public int getRuntime() {return this.runtime;}
+	public String getRuntime() {return this.runtime;}
 	public String getImage() {return this.image;}
 	public String getSummary() {return this.summary;}
 	public String getNetwork() {return this.network;}

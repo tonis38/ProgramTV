@@ -69,7 +69,7 @@ public class TVDatabase {
     		prepStmt.setInt(2, item.getSeason());
     		prepStmt.setInt(3, item.getNumber());
     		prepStmt.setString(4, item.getAirDate());
-    		prepStmt.setInt(5, item.getRuntime());
+    		prepStmt.setString(5, item.getRuntime());
     		prepStmt.setString(6, item.getImage());
     		prepStmt.setString(7, item.getSummary());
     		prepStmt.setString(8, item.getNetwork());
@@ -143,7 +143,7 @@ public class TVDatabase {
     		int season;
     		int number;
     		String airDate;
-    		int runtime;
+    		String runtime;
     		String image;
     		String summary;
     		String network;
@@ -154,7 +154,7 @@ public class TVDatabase {
     			season = result.getInt("season");
     			number = result.getInt("number");
     			airDate = result.getString("airDate");
-    			runtime = result.getInt("runtime");
+    			runtime = result.getString("runtime");
     			image = result.getString("image");
     			summary = result.getString("summary");
     			network = result.getString("network");
