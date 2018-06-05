@@ -46,7 +46,7 @@ public class TVDatabase {
 	
     private boolean createTables() {
     	try {
-    		stat.execute("CREATE TABLE IF NOT EXISTS tvitems(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), season INT, number INT, airDate VARCHAR(10), runtime INT, image VARCHAR(255), summary VARCHAR(1023), network VARCHAR(255), tvshow VARCHAR(255))");
+    		stat.execute("CREATE TABLE IF NOT EXISTS tvitems(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), season INT, number INT, airDate VARCHAR(10), runtime VARCHAR (255), image VARCHAR(255), summary VARCHAR(1023), network VARCHAR(255), tvshow VARCHAR(255))");
     		stat.execute("CREATE TABLE IF NOT EXISTS tvnetworks(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), country VARCHAR(255), logo VARCHAR(255))");
     		stat.execute("CREATE TABLE IF NOT EXISTS tvshows(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), language VARCHAR(255), types BLOB, status VARCHAR(255), runtime INT, premiered VARCHAR(10), officialsite VARCHAR(255), summary VARCHAR(1023), airtime VARCHAR(10), days INT, rating BLOB, image VARCHAR(255), network VARCHAR(255))");
     	} catch (SQLException e) {

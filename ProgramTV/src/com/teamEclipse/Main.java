@@ -2,13 +2,17 @@ package com.teamEclipse;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+
 import com.teamEclipse.TVDatabase;
+import com.parser.*;
 
 /**
  * Created by Zura on 2018-04-30.
  */
 public class Main {
     public static void main (String [] args){
+    	
         EventQueue.invokeLater(() -> {
         	try {
             	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -19,10 +23,15 @@ public class Main {
 
         	//TEST
         	/////////////////////////////////////
-        	TVDatabase database = new TVDatabase();
-        	database.insertNetworks(new TVNetwork(0, "Warsaw Shore", "Polska", "TEST"));
-        	database.insertNetworks(new TVNetwork(0, "Dlaczego Ja?!?!?", "Polska", "TEST"));
-        	database.insertNetworks(new TVNetwork(0, "Warsaw Shore", "Polska", "TEST"));
+
+    		CPParser cp = new CPParser();
+    		ParserDBConnect export = new ParserDBConnect();
+    		try {
+				export.ExportToDB(cp.ParseData());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         	/////////////////////////////////////
         	
         	
