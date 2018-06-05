@@ -20,8 +20,9 @@ public class Main {
         	//TEST
         	/////////////////////////////////////
         	TVDatabase database = new TVDatabase();
-        	database.insertNetworks(new TVNetwork(1, "Warsaw Shore", "Polska", "TEST"));
-        	database.insertNetworks(new TVNetwork(1, "Dlaczego Ja?!?!?", "Polska", "TEST"));
+        	database.insertNetworks(new TVNetwork(0, "Warsaw Shore", "Polska", "TEST"));
+        	database.insertNetworks(new TVNetwork(0, "Dlaczego Ja?!?!?", "Polska", "TEST"));
+        	database.insertNetworks(new TVNetwork(0, "Warsaw Shore", "Polska", "TEST"));
         	/////////////////////////////////////
         	
         	
