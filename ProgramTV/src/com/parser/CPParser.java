@@ -1,11 +1,15 @@
 package com.parser;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import com.teamEclipse.TVItem;
 
 public class CPParser {
 	public static void main(String[] args) throws  IOException {
@@ -23,6 +27,8 @@ public class CPParser {
     
     Elements rows = TVtable.select("tr.rowWithoutHeader");
     
+    List <TVItem> items = new ArrayList<TVItem>();
+    
     for (int i = 0; i < headers.size(); i++) {
     	for(int j = 0; j < rows.size(); j++) {
     		Element row = rows.get(j);
@@ -31,12 +37,13 @@ public class CPParser {
     		Elements programs = column.select("div.newPtvTableProgram");
     		
     		for(Element program : programs) {
+    			
+    			TVItem item = new TVItem();
+    			item.setNetwork(headers.get(i).attr("alt"));
+    			item.setRuntime(program.select("div.newPtvTableProgramLeft , div.newPtvTableProgramLeftFuture").text());
+    			item.setName(program.select("div.newPtvTableProgramRight > a").text());
+    			item.setSummary(program.select("div.newPtvTableProgramRight > span").text());
     		
-    		String time = program.select("div.newPtvTableProgramLeft , div.newPtvTableProgramLeftFuture").text();
-    		String name = program.select("div.newPtvTableProgramRight > a").text();
-    		String desc = program.select("div.newPtvTableProgramRight > span").text();
-    		
-    		print("Channel name: %s. Program name: %s. Time: %s. Description: %s.", headers.get(i).attr("alt"), name, time, desc);
     		}
     	}
     }    
