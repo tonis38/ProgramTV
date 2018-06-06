@@ -30,7 +30,7 @@ public class TVDatabase {
     		Class.forName(TVDatabase.DRIVER);
     	}catch(ClassNotFoundException e) {
             System.err.println("No JDBC driver");
-            e.printStackTrace();
+            //e.printStackTrace();
     	}
     	
     	try {
@@ -38,7 +38,7 @@ public class TVDatabase {
     		stat = conn.createStatement();
     	} catch(SQLException e) {
             System.err.println("Can't connect to database!");
-            e.printStackTrace();
+            //e.printStackTrace();
     	}
     	
     	createTables();
@@ -51,7 +51,7 @@ public class TVDatabase {
     		stat.execute("drop TABLE tvnetworks");
     	} catch (SQLException e) {
             System.err.println("Error while creating tables");
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
     	
@@ -65,7 +65,7 @@ public class TVDatabase {
     		stat.execute("CREATE TABLE IF NOT EXISTS tvshows(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), language VARCHAR(255), types BLOB, status VARCHAR(255), runtime INT, premiered VARCHAR(10), officialsite VARCHAR(255), summary VARCHAR(1023), airtime VARCHAR(10), days INT, rating BLOB, image VARCHAR(255), network VARCHAR(255))");
     	} catch (SQLException e) {
             System.err.println("Error while creating tables");
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
     	
@@ -91,7 +91,7 @@ public class TVDatabase {
     		prepStmt.execute();
     	} catch (SQLException e) {
             System.err.println("Error while inserting TVItem");
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
     	
@@ -111,7 +111,7 @@ public class TVDatabase {
     		prepStmt.execute();
     	} catch (SQLException e) {
             System.err.println("Error while inserting TVNetwork");
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
     	
@@ -140,7 +140,7 @@ public class TVDatabase {
     		prepStmt.setString(13, show.getNetwork());
     	} catch (SQLException e) {
             System.err.println("Error while inserting TVShow");
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
     	
@@ -176,7 +176,8 @@ public class TVDatabase {
         		items.add(new TVItem(ID, name, season, number, airDate, runtime, image, summary, network, show));
     		}
     	} catch (SQLException e) {
-            e.printStackTrace();
+    		System.err.println("Error while selecting TVItems!");
+            //e.printStackTrace();
             return null;
         }
     	return items;
@@ -199,7 +200,8 @@ public class TVDatabase {
     		}
     		
     	} catch (SQLException e) {
-            e.printStackTrace();
+    		System.err.println("Error while selecting TVNetworks!");
+            //e.printStackTrace();
             return null;
         }
     	
@@ -243,7 +245,8 @@ public class TVDatabase {
         		shows.add(new TVShow(ID, name, language, type, status, runtime, premiered, officialSite, summary, airtime, days, rating, image, network));
         	}
     	} catch (SQLException e) {
-            e.printStackTrace();
+    		System.err.println("Error while selecting TVShows!");
+            //e.printStackTrace();
             return null;
         }
     	
@@ -255,7 +258,8 @@ public class TVDatabase {
     		if (!result.next())
     			return false;
     	} catch (SQLException e) {
-            e.printStackTrace();
+    		System.err.println("Error while searching for existing records!");
+            //e.printStackTrace();
             return false;
         }
     	
