@@ -123,7 +123,7 @@ class TVPanel extends JPanel{
 	    	if(row == 0)
 	    		return columnNames[column];
 	    	
-	        return data.get(row-1).get(column);
+	        return data.get(column).get(row-1);
 	    }
 	    // optional
 	    @Override
