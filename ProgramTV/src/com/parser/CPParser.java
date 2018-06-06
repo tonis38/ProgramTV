@@ -20,6 +20,7 @@ public class CPParser {
     Document doc = new Document(url);
     
     try {
+    	System.out.printf("Fetching %s...", url);
     	doc = Jsoup.connect(url).get();											// Try to connect to site
     }
     catch (IOException e){
