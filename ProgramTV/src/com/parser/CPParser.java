@@ -15,19 +15,19 @@ public class CPParser {
 	
 	private static List <TVItem> items = new LinkedList<TVItem>();
 	
-	public List<TVItem> ParseData() throws IOException {
+	public List<TVItem> ParseData(){
     String url = "http://www.cyfrowypolsat.pl/redir/program-tv/program-tv-pionowy.cp";    
     Document doc = new Document(url);
     
     try {
-    	System.out.printf("Fetching %s...", url);
+    	System.out.printf("Fetching %s... \n", url);
     	doc = Jsoup.connect(url).get();											// Try to connect to site
     }
     catch (IOException e){
-    	System.err.printf("Connection error: cannot connect to %s", url);		// Cannot connect to site, throw error
+    	System.err.printf("Connection error: cannot connect to %s. ", url);		// Cannot connect to site, throw error
         e.printStackTrace();
         return null;															// Exit, return null
-    }    
+    }
     
     //If connected, try to parse data
     
@@ -54,7 +54,7 @@ public class CPParser {
     			//Fill with data
     			item.setNetwork(headers.get(i).attr("alt"));
     			item.setRuntime(program.select("div.newPtvTableProgramLeft , div.newPtvTableProgramLeftFuture").text());
-    			item.setName(program.select("div.newPtvTableProgramRight > a").text().replace("\"", "'").replace("od", ""));
+    			item.setName(program.select("div.newPtvTableProgramRight > a").text().replace("\"", "'"));
     			item.setSummary(program.select("div.newPtvTableProgramRight > span").text());
     			item.setID(0);
     			    			

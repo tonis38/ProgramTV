@@ -2,6 +2,7 @@ package com.parser;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -18,13 +19,22 @@ public class NCPlusParser {
 	
 	public static List <TVItem> items = new LinkedList<TVItem>();
 	
-    public List <TVItem> ParseData() throws  IOException {
+    public List <TVItem> ParseData(){
         String url = "https://ncplus.pl/program-tv";
         print("Fetching %s...", url);
         
-        Document doc = Jsoup.connect(url).get();
+        Document doc = null;
+		try {
+			
+			doc = Jsoup.connect(url).get();
+		} catch (IOException e1) {
+			System.err.printf("Connection error: cannot connect to %s. ", url);		// Cannot connect to site, throw error
+			e1.printStackTrace();
+			return null;		// Return nothing if catched exception
+		}
+		
         Elements channels = doc.select("#programtvfull > div.clearfix");		//Extract channels from site
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     	Date date = new Date();
     	                    
         for (Element channel : channels) {
@@ -43,6 +53,20 @@ public class NCPlusParser {
         		String description = " ";
         		String airdate = dateFormat.format(date);
         		
+        		dateFormat = new SimpleDateFormat("HH:mm");
+        		Date begin = null;
+        		Date end = null;
+        		try {
+					begin = dateFormat.parse(starttime);
+					end = dateFormat.parse(endtime);
+				} catch (ParseException e) {
+					System.err.printf("Cannot parse airtime from start - end time.");
+					e.printStackTrace();
+				}
+        		
+        		
+        		String runtime = dateFormat.format(end.getTime() - begin.getTime());
+        		
         		if(a > 1) { 
         			description = programname.substring( a );
         			programname = programname.substring(0, a - 2);
@@ -51,9 +75,10 @@ public class NCPlusParser {
         		//Fill item with data
         		item.setNetwork(channelname);
         		item.setName(programname);
-        		item.setRuntime(starttime + " " + airdate);
+        		item.setAirDate(airdate + " " + starttime);
+        		item.setRuntime(runtime);
         		item.setSummary(description);
-        		print("Adding new item: Channel name: %s. Program name: %s. Time: %s %s. Description: %s", channelname, programname, starttime, airdate, description);	
+        		print("Adding new item: Channel name: %s. Program name: %s. Time: %s %s.", channelname, programname, starttime, airdate);	
         		
         		items.add(item);		//Add new item to the list
         	}
