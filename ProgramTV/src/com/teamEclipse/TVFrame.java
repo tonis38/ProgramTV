@@ -2,7 +2,6 @@ package com.teamEclipse;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -28,7 +27,7 @@ class TVPanel extends JPanel{
 		setLayout(new BorderLayout());
 		
 		menuPanel = new JPanel();
-		menuPanel.setLayout(new GridLayout(4,1));
+		menuPanel.setLayout(new GridLayout(20,1));
 		ActionListener synchronize = new SynchronizeDatabaseEvent();
 		addMenuButton("Synchronizuj", synchronize);
 		addMenuButton("Dzisiaj", null);
