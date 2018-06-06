@@ -56,7 +56,6 @@ public class CPParser {
     			item.setRuntime(program.select("div.newPtvTableProgramLeft , div.newPtvTableProgramLeftFuture").text());
     			item.setName(program.select("div.newPtvTableProgramRight > a").text().replace("\"", "'"));
     			item.setSummary(program.select("div.newPtvTableProgramRight > span").text());
-    			item.setID(0);
     			    			
     			items.add(item);			// Add item to the list   		
     		}
