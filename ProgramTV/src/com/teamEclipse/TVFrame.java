@@ -41,12 +41,8 @@ class TVPanel extends JPanel{
 		
 		CPParser cp = new CPParser();
 		ParserDBConnect export = new ParserDBConnect();
-		try {
-			export.ExportToDB(cp.ParseData());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		export.ExportToDB(cp.ParseData());
+		
 		
 		TVDatabase db = new TVDatabase();
 		itemsList = db.selectTVItems();
@@ -99,12 +95,7 @@ class TVPanel extends JPanel{
 		public void actionPerformed(ActionEvent event) {
 			CPParser cp = new CPParser();
 			ParserDBConnect export = new ParserDBConnect();
-			try {
-				export.ExportToDB(cp.ParseData());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			export.ExportToDB(cp.ParseData());			
 			
 			TVDatabase db = new TVDatabase();
 			itemsList = db.selectTVItems();

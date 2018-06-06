@@ -19,11 +19,20 @@ public class NCPlusParser {
 	
 	public static List <TVItem> items = new LinkedList<TVItem>();
 	
-    public List <TVItem> ParseData() throws  IOException {
+    public List <TVItem> ParseData(){
         String url = "https://ncplus.pl/program-tv";
         print("Fetching %s...", url);
         
-        Document doc = Jsoup.connect(url).get();
+        Document doc = null;
+		try {
+			
+			doc = Jsoup.connect(url).get();
+		} catch (IOException e1) {
+			System.err.printf("Connection error: cannot connect to %s. ", url);		// Cannot connect to site, throw error
+			e1.printStackTrace();
+			return null;		// Return nothing if catched exception
+		}
+		
         Elements channels = doc.select("#programtvfull > div.clearfix");		//Extract channels from site
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     	Date date = new Date();
@@ -51,7 +60,7 @@ public class NCPlusParser {
 					begin = dateFormat.parse(starttime);
 					end = dateFormat.parse(endtime);
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
+					System.err.printf("Cannot parse airtime from start - end time.");
 					e.printStackTrace();
 				}
         		

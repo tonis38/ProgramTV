@@ -15,7 +15,7 @@ public class CPParser {
 	
 	private static List <TVItem> items = new LinkedList<TVItem>();
 	
-	public List<TVItem> ParseData() throws IOException {
+	public List<TVItem> ParseData(){
     String url = "http://www.cyfrowypolsat.pl/redir/program-tv/program-tv-pionowy.cp";    
     Document doc = new Document(url);
     
@@ -24,10 +24,10 @@ public class CPParser {
     	doc = Jsoup.connect(url).get();											// Try to connect to site
     }
     catch (IOException e){
-    	System.err.printf("Connection error: cannot connect to %s", url);		// Cannot connect to site, throw error
+    	System.err.printf("Connection error: cannot connect to %s. ", url);		// Cannot connect to site, throw error
         e.printStackTrace();
         return null;															// Exit, return null
-    }    
+    }
     
     //If connected, try to parse data
     
