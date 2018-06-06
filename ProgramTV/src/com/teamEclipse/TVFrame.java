@@ -22,6 +22,7 @@ public class TVFrame extends JFrame{
 class TVPanel extends JPanel{
 	private JPanel menuPanel;
 	private List<TVItem> itemsList;
+	private TVTableModel tableModel;
 	
 	public TVPanel() {
 		setLayout(new BorderLayout());
@@ -50,7 +51,9 @@ class TVPanel extends JPanel{
 		TVDatabase db = new TVDatabase();
 		itemsList = db.selectTVItems();
 		
-		add(CreateTable(), BorderLayout.CENTER);
+		tableModel = new TVTableModel();
+		CreateTable();
+		add(new JTable(tableModel), BorderLayout.CENTER);
 	}
 	private void InitVariables() {
 		itemsList = new LinkedList<TVItem>();
@@ -62,7 +65,7 @@ class TVPanel extends JPanel{
 		menuPanel.add(button);
 	}
 	
-	private JTable CreateTable() {
+	private void CreateTable() {
 		String [] columnNames = { "TVP 1", "TVP 2", "TV 4", "POLSAT", "POLSAT News"};
 		List<List<String>> values = new ArrayList<List<String>>();
 
@@ -75,15 +78,20 @@ class TVPanel extends JPanel{
 			}
 			values.add(networkItems);
 		}
+		
 		int longest = 0;
 		for (List<String> list : values)
 			if (list.size() > longest)
 				longest = list.size();
-		for (List<String> list : values)
-			for (int i = 0; i < longest - list.size(); i++)
+		
+		for (List<String> list : values) {
+			int l = longest - list.size();
+			for (int i = 0; i < l; i++) {
 				list.add("");
-	
-		return new JTable(new MyTableModel(values, columnNames));
+			}
+		}
+		
+		tableModel.setData(values, columnNames);
 	}
 	
 	class SynchronizeDatabaseEvent implements ActionListener{
@@ -100,19 +108,30 @@ class TVPanel extends JPanel{
 			
 			TVDatabase db = new TVDatabase();
 			itemsList = db.selectTVItems();
+
+			CreateTable();
+			tableModel.fireTableDataChanged();
 		}
 	}
 	
-	class MyTableModel extends AbstractTableModel {
+	class TVTableModel extends AbstractTableModel {
 	    private List<List<String>> data;
 	    private String[] columnNames;
-	    public MyTableModel(List<List<String>> data, String[] columnNames) {
+	    public TVTableModel(List<List<String>> data, String[] columnNames) {
+	        this.data = data;
+	        this.columnNames = columnNames;
+	    }
+	    public TVTableModel() { 
+	    	this.data = null; 
+	    	this.columnNames = null; 
+	    }
+	    public void setData(List<List<String>> data, String[] columnNames) {
 	        this.data = data;
 	        this.columnNames = columnNames;
 	    }
 	    @Override
 	    public int getRowCount() {
-	        return data.size() + 1;
+	        return data.get(0).size() + 1;
 	    }
 	    @Override
 	    public int getColumnCount() {
