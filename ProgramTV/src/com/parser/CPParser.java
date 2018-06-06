@@ -20,7 +20,7 @@ public class CPParser {
     Document doc = new Document(url);
     
     try {
-    	System.out.printf("Fetching %s...", url);
+    	System.out.printf("Fetching %s... \n", url);
     	doc = Jsoup.connect(url).get();											// Try to connect to site
     }
     catch (IOException e){
@@ -54,7 +54,7 @@ public class CPParser {
     			//Fill with data
     			item.setNetwork(headers.get(i).attr("alt"));
     			item.setRuntime(program.select("div.newPtvTableProgramLeft , div.newPtvTableProgramLeftFuture").text());
-    			item.setName(program.select("div.newPtvTableProgramRight > a").text().replace("\"", "'").replace("od", ""));
+    			item.setName(program.select("div.newPtvTableProgramRight > a").text().replace("\"", "'"));
     			item.setSummary(program.select("div.newPtvTableProgramRight > span").text());
     			item.setID(0);
     			    			
