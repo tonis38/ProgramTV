@@ -1,10 +1,7 @@
 package com.parser;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,12 +9,17 @@ import org.jsoup.select.Elements;
 
 
 public class OnetParser {
-	public static void main(String[] args) throws  IOException {
-		//Validate.isTrue(args.length == 1, "usage: supply url to fetch");
+	public static void main(String[] args){
 	    String url = "https://programtv.onet.pl/";
 	    print("Fetching %s...", url);
 	    
-	    Document doc = Jsoup.connect(url).get();
+	    Document doc = null;
+		try {
+			doc = Jsoup.connect(url).get();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    Elements channels = doc.select("#emissions > div.inner > div.boxTVHolder");		//Extract channels from site
 	    print("%s", channels.first());
 	              
