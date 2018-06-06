@@ -43,6 +43,20 @@ public class TVDatabase {
     	
     	createTables();
     }
+    
+    public boolean clearTables() {
+    	try {
+    		stat.execute("drop TABLE tvitems");
+    		stat.execute("drop TABLE tvshows");
+    		stat.execute("drop TABLE tvnetworks");
+    	} catch (SQLException e) {
+            System.err.println("Error while creating tables");
+            e.printStackTrace();
+            return false;
+        }
+    	
+    	return true;
+    }
 	
     private boolean createTables() {
     	try {
