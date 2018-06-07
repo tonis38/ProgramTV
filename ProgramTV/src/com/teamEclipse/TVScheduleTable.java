@@ -1,19 +1,20 @@
 package com.teamEclipse;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 public class TVScheduleTable extends JTable{
 	private TVTableModel tableModel;
@@ -22,11 +23,13 @@ public class TVScheduleTable extends JTable{
 		super();
 		tableModel = new TVTableModel();
 		this.setModel(tableModel);
+		this.setDefaultRenderer(String.class, new TVTableCellRenderer());
+
 	}
 	
 	public void UpdateTable(List<TVItem> itemsList) {
 		String [] columnNames = { "TVP 1", "TVP 2", "TV 4", "POLSAT", "POLSAT News"};
-		List<List<String>> data = new ArrayList<List<String>>();
+		List<List<TVCellData>> data = new ArrayList<List<TVCellData>>();
 		List<TreeMap<Integer, TVItem>> values = new ArrayList<TreeMap<Integer,TVItem>>();
 		String airTime = "";
 
@@ -36,24 +39,24 @@ public class TVScheduleTable extends JTable{
 			for (TVItem item : itemsList) {
 				if(item.getNetwork().equals(columnNames[i])) {
 					airTime = item.getAirDate().substring(11, 16);
-					networkItems.put( timeToMinutes(airTime) , item);
+					networkItems.put( timeToMinutes(airTime) , item );
 				}
 			}
 			values.add(networkItems);
 		}
 		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:MM");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 		LocalDateTime ldt = LocalDateTime.now();
 		int currentTime = timeToMinutes(formatter.format(ldt));
 
 		
 		for(int i = 0; i < columnNames.length; i++)
-			data.add(new ArrayList<String>());
+			data.add(new ArrayList<TVCellData>());
 		
 		boolean foundCurrentShow;
-		int network;
+		int column, longest;
 		for (int hour = 0; hour < 24; hour++) {
-			network = 0;
+			column = 0;
 			for (TreeMap<Integer, TVItem> map : values) {
 				foundCurrentShow = false;
 				for (Map.Entry<Integer, TVItem> entry : map.entrySet()) {
@@ -63,25 +66,26 @@ public class TVScheduleTable extends JTable{
 					//If next entry's air time is higher than currentTime that means that this entry is running right now
 					if (!foundCurrentShow && nextKey != null && nextKey > currentTime ) {
 						if (Integer.parseInt(item.getAirDate().substring(11, 13)) == hour) {
-							data.get(network).add("T - " + item.getAirDate().substring(11, 16) + " - " + item.getName());
+							data.get(column).add(new TVCellData(item.getAirDate().substring(11, 16), item.getName(), true));
 						}
 						foundCurrentShow = true;
 					}
 					else if (Integer.parseInt(item.getAirDate().substring(11, 13)) == hour) {
-						data.get(network).add("      " + item.getAirDate().substring(11, 16) + " - " + item.getName());
+						data.get(column).add(new TVCellData(item.getAirDate().substring(11, 16), item.getName(), false));
 					}
 				}
-				network++;
+				column++;
 			}
-			int longest = 0;
-			for (List<String> list : data)
+			
+			longest = 0;
+			for (List<TVCellData> list : data)
 				if (list.size() > longest)
 					longest = list.size();
-		
-			for (List<String> list :data) {
+
+			for (List<TVCellData> list :data) {
 				int l = longest - list.size();
 				for (int j = 0; j < l; j++) {
-					list.add("");
+					list.add( new TVCellData() );
 				}
 			}
 		}
@@ -94,29 +98,32 @@ public class TVScheduleTable extends JTable{
 		return Integer.parseInt(time.substring(0, 2))*60 + Integer.parseInt(time.substring(3));
 	}
 	
-	
-	
 	class TVTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1L;
 		
-		private List<List<String>> data;
+		private List<List<TVCellData>> data;
 	    private String[] columnNames;
-	    public TVTableModel(List<List<String>> data, String[] columnNames) {
+	    
+	    @Override
+	    public Class<?> getColumnClass(int columnIndex){
+	    	return String.class;
+	    }
+	    
+	    public TVTableModel(List<List<TVCellData>> data, String[] columnNames) {
 	        this.data = data;
 	        this.columnNames = columnNames;
 	    }
 	    public TVTableModel() { 
 	    	String [] columnNames = { "", "", "", "", ""};
-			List<List<String>> values = new ArrayList<List<String>>();
+			List<List<TVCellData>> values = new ArrayList<List<TVCellData>>();
 			for (int i = 0; i < columnNames.length; i++) {
-				List<String> networkItems = new ArrayList<String>();
-				networkItems.add("");
+				List<TVCellData> networkItems = new ArrayList<TVCellData>();
+				networkItems.add(new TVCellData());
 				values.add(networkItems);
 			}
 			this.setData(values, columnNames);
-			this.fireTableDataChanged();
 	    }
-	    public void setData(List<List<String>> data, String[] columnNames) {
+	    public void setData(List<List<TVCellData>> data, String[] columnNames) {
 	        this.data = data;
 	        this.columnNames = columnNames;
 	    }
@@ -138,7 +145,66 @@ public class TVScheduleTable extends JTable{
 	    // optional
 	    @Override
 	    public void setValueAt(Object aValue, int row, int column) {
-	        data.get(row).set(column, (String) aValue);
+	        data.get(row).set(column, (TVCellData) aValue);
 	    }
+	}
+	
+	class TVTableCellRenderer implements TableCellRenderer{
+		//private static final long serialVersionUID = 1L;
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			if (hasFocus) {}
+			if (row == 0) {
+				JPanel panel = new JPanel();
+				panel.setOpaque(true);
+				panel.setLayout(new BorderLayout());
+				
+				JLabel label = new JLabel((String) value);
+				label.setHorizontalAlignment(row == 0 ? JLabel.CENTER : JLabel.LEFT);
+				panel.add(label, BorderLayout.CENTER);
+				return panel;
+			}
+			TVCellData data = (TVCellData) value;
+			
+			JPanel panel = new JPanel();
+			panel.setOpaque(true);
+		    //panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+			panel.setLayout(new BorderLayout());
+			
+			JLabel timeLabel = new JLabel(data.getTime());
+			if (data.getName().equals(""))
+				timeLabel.setForeground(Color.DARK_GRAY);
+			timeLabel.setHorizontalAlignment(JLabel.LEFT);
+			timeLabel.setBackground(Color.DARK_GRAY);
+			timeLabel.setOpaque(true);
+			if (row != 0) panel.add(timeLabel, BorderLayout.WEST);
+			
+			JLabel label = new JLabel(" " + data.getName());
+			if (data.isRunning())
+				label.setBackground(Color.GRAY);
+			label.setOpaque(true);
+			label.setHorizontalAlignment(row == 0 ? JLabel.CENTER : JLabel.LEFT);
+			panel.add(label, BorderLayout.CENTER);
+			return panel;
+		}
+	}
+	class TVCellData{
+		private String time;
+		private String name;
+		private boolean running;
+		public TVCellData() {
+			this.time = "00:00";
+			this.name = "";
+			this.running = false;
+		}
+		public TVCellData(String time, String name, boolean running) {
+			this.time = time;
+			this.name = name;
+			this.running = running;
+		}
+		public String getTime() {return time;}
+		public String getName() {return name;}
+		public boolean isRunning() {return running;}
 	}
 }
