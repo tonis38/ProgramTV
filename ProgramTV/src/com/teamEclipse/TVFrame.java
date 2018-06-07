@@ -2,11 +2,13 @@ package com.teamEclipse;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Vector;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import com.parser.*;
@@ -21,7 +23,7 @@ public class TVFrame extends JFrame{
 class TVPanel extends JPanel{
 	private JPanel menuPanel;
 	private List<TVItem> itemsList;
-	private TVTableModel tableModel;
+	private TVScheduleTable table;
 	
 	public TVPanel() {
 		setLayout(new BorderLayout());
@@ -38,17 +40,10 @@ class TVPanel extends JPanel{
 		
 		InitVariables();
 		
-		CPParser cp = new CPParser();
-		ParserDBConnect export = new ParserDBConnect();
-		export.ExportToDB(cp.ParseData());
-		
-		
-		TVDatabase db = new TVDatabase();
-		itemsList = db.selectTVItems();
-		
-		tableModel = new TVTableModel();
-		CreateTable();
-		add(new JTable(tableModel), BorderLayout.CENTER);
+		table = new TVScheduleTable();
+		LoadDBData();
+
+		add(table, BorderLayout.CENTER);
 	}
 	private void InitVariables() {
 		itemsList = new LinkedList<TVItem>();
@@ -60,33 +55,11 @@ class TVPanel extends JPanel{
 		menuPanel.add(button);
 	}
 	
-	private void CreateTable() {
-		String [] columnNames = { "TVP 1", "TVP 2", "TV 4", "POLSAT", "POLSAT News"};
-		List<List<String>> values = new ArrayList<List<String>>();
+	private void LoadDBData() {
+		TVDatabase db = new TVDatabase();
+		itemsList = db.selectTVItems();
 
-		for (int i = 0; i < columnNames.length; i++) {
-			List<String> networkItems = new ArrayList<String>();
-			for (TVItem item : itemsList) {
-				if(item.getNetwork().equals(columnNames[i])) {
-					networkItems.add(item.getName());
-				}
-			}
-			values.add(networkItems);
-		}
-		
-		int longest = 0;
-		for (List<String> list : values)
-			if (list.size() > longest)
-				longest = list.size();
-		
-		for (List<String> list : values) {
-			int l = longest - list.size();
-			for (int i = 0; i < l; i++) {
-				list.add("");
-			}
-		}
-		
-		tableModel.setData(values, columnNames);
+		table.UpdateTable(itemsList);
 	}
 	
 	class SynchronizeDatabaseEvent implements ActionListener{
@@ -94,50 +67,9 @@ class TVPanel extends JPanel{
 		public void actionPerformed(ActionEvent event) {
 			CPParser cp = new CPParser();
 			ParserDBConnect export = new ParserDBConnect();
-			export.ExportToDB(cp.ParseData());			
+			export.ExportToDB(cp.ParseData());
 			
-			TVDatabase db = new TVDatabase();
-			itemsList = db.selectTVItems();
-
-			CreateTable();
-			tableModel.fireTableDataChanged();
+			LoadDBData();
 		}
-	}
-	
-	class TVTableModel extends AbstractTableModel {
-	    private List<List<String>> data;
-	    private String[] columnNames;
-	    public TVTableModel(List<List<String>> data, String[] columnNames) {
-	        this.data = data;
-	        this.columnNames = columnNames;
-	    }
-	    public TVTableModel() { 
-	    	this.data = null; 
-	    	this.columnNames = null; 
-	    }
-	    public void setData(List<List<String>> data, String[] columnNames) {
-	        this.data = data;
-	        this.columnNames = columnNames;
-	    }
-	    @Override
-	    public int getRowCount() {
-	        return data.get(0).size() + 1;
-	    }
-	    @Override
-	    public int getColumnCount() {
-	        return columnNames.length;
-	    }
-	    @Override
-	    public Object getValueAt(int row, int column) {
-	    	if(row == 0)
-	    		return columnNames[column];
-	    	
-	        return data.get(column).get(row-1);
-	    }
-	    // optional
-	    @Override
-	    public void setValueAt(Object aValue, int row, int column) {
-	        data.get(row).set(column, (String) aValue);
-	    }
 	}
 }
