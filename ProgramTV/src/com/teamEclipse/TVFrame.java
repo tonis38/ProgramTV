@@ -40,13 +40,13 @@ class TVPanel extends JPanel{
 		
 		InitVariables();
 		
-		table = new TVScheduleTable();
 		LoadDBData();
 
 		add(table, BorderLayout.CENTER);
 	}
 	private void InitVariables() {
 		itemsList = new LinkedList<TVItem>();
+		table = new TVScheduleTable();
 	}
 	
 	private void addMenuButton(String label, ActionListener listener) {
