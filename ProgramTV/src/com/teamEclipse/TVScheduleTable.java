@@ -3,6 +3,11 @@ package com.teamEclipse;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.SystemColor;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,10 +18,18 @@ import java.util.TreeMap;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
+import javax.swing.border.MatteBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
 public class TVScheduleTable extends JTable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final int COLUMN_WIDTH = 250;
 	private TVTableModel tableModel;
 	
 	public TVScheduleTable() {
@@ -24,7 +37,8 @@ public class TVScheduleTable extends JTable{
 		tableModel = new TVTableModel();
 		this.setModel(tableModel);
 		this.setDefaultRenderer(String.class, new TVTableCellRenderer());
-
+		this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		this.setTableHeader(null);
 	}
 	
 	public void UpdateTable(List<TVItem> itemsList) {
@@ -91,6 +105,9 @@ public class TVScheduleTable extends JTable{
 		}
 		
 		tableModel.setData(data, columnNames);
+		for (int i = 0; i < this.getColumnCount(); i++) {
+			this.getColumnModel().getColumn(i).setPreferredWidth(COLUMN_WIDTH);
+		}
 		tableModel.fireTableDataChanged();
 	}
 	
@@ -151,41 +168,65 @@ public class TVScheduleTable extends JTable{
 	
 	class TVTableCellRenderer implements TableCellRenderer{
 		//private static final long serialVersionUID = 1L;
+		private Color headerBackground;
+		private Color timeBackground;
+		private Color defaultColor;
 
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-			if (hasFocus) {}
+			defaultColor = table.getBackground();
+			if ( (defaultColor.getRed()*0.299 + defaultColor.getGreen()*0.587 + defaultColor.getBlue()*0.114)/255 < 0.5 ) {	//Background is dark
+				headerBackground = table.getBackground().brighter().brighter();
+				timeBackground = table.getBackground().brighter();
+			}else {	//Background is light
+				headerBackground = table.getBackground().darker().darker();
+				timeBackground = table.getBackground().darker();
+			}
+			
+			Font defaultFont = new Font(new JLabel().getFont().getFontName(), Font.PLAIN, 14);
+			Font headerFont = new Font(new JLabel().getFont().getFontName(), Font.PLAIN, 22);
+			
 			if (row == 0) {
+				table.setRowHeight(0, 30);
+				
 				JPanel panel = new JPanel();
 				panel.setOpaque(true);
+				panel.setBackground(headerBackground);
 				panel.setLayout(new BorderLayout());
 				
-				JLabel label = new JLabel((String) value);
+				JLabel label = new SmoothLabel((String) value);
 				label.setHorizontalAlignment(row == 0 ? JLabel.CENTER : JLabel.LEFT);
+				label.setFont(headerFont);
 				panel.add(label, BorderLayout.CENTER);
+				panel.setBorder(new MatteBorder(0,1,1,0, table.getGridColor()));
 				return panel;
 			}
 			TVCellData data = (TVCellData) value;
 			
 			JPanel panel = new JPanel();
+			panel.setBorder(new MatteBorder(0,1,0,0, table.getGridColor()));
 			panel.setOpaque(true);
 		    //panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
 			panel.setLayout(new BorderLayout());
 			
-			JLabel timeLabel = new JLabel(data.getTime());
+			JLabel timeLabel = new SmoothLabel(" " + data.getTime() + " ");
+			timeLabel.setFont(defaultFont);
 			if (data.getName().equals(""))
-				timeLabel.setForeground(Color.DARK_GRAY);
+				timeLabel.setForeground(timeBackground);
 			timeLabel.setHorizontalAlignment(JLabel.LEFT);
-			timeLabel.setBackground(Color.DARK_GRAY);
+			timeLabel.setBackground(timeBackground);
 			timeLabel.setOpaque(true);
-			if (row != 0) panel.add(timeLabel, BorderLayout.WEST);
+			panel.add(timeLabel, BorderLayout.WEST);
 			
-			JLabel label = new JLabel(" " + data.getName());
+			JLabel label = new SmoothLabel(" " + data.getName());
+			label.setFont(defaultFont);
 			if (data.isRunning())
-				label.setBackground(Color.GRAY);
+				label.setBorder(new MatteBorder(1,1,1,1, Color.RED));
+			
 			label.setOpaque(true);
 			label.setHorizontalAlignment(row == 0 ? JLabel.CENTER : JLabel.LEFT);
 			panel.add(label, BorderLayout.CENTER);
+			setShowGrid(false);
 			return panel;
 		}
 	}
@@ -206,5 +247,19 @@ public class TVScheduleTable extends JTable{
 		public String getTime() {return time;}
 		public String getName() {return name;}
 		public boolean isRunning() {return running;}
+	}
+
+	class SmoothLabel extends JLabel {
+
+	    public SmoothLabel(String text) {
+	        super(text);
+	    }
+
+	    public void paintComponent(Graphics g) {
+	        Graphics2D g2d = (Graphics2D) g;
+	        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+	        super.paintComponent(g2d);
+	    }
 	}
 }

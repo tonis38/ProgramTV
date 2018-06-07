@@ -42,7 +42,8 @@ class TVPanel extends JPanel{
 		
 		LoadDBData();
 
-		add(table, BorderLayout.CENTER);
+		JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		add(scrollPane, BorderLayout.CENTER);
 	}
 	private void InitVariables() {
 		itemsList = new LinkedList<TVItem>();
