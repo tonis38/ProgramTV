@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.SystemColor;
+import java.awt.event.MouseEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.View;
 
 public class TVScheduleTable extends JTable{
 	/**
@@ -78,7 +81,7 @@ public class TVScheduleTable extends JTable{
 					Integer nextKey = map.higherKey(entry.getKey());
 					
 					//If next entry's air time is higher than currentTime that means that this entry is running right now
-					if (!foundCurrentShow && nextKey != null && nextKey > currentTime ) {
+					if (!foundCurrentShow && (nextKey == null || nextKey > currentTime) ) {
 						if (Integer.parseInt(item.getAirDate().substring(11, 13)) == hour) {
 							data.get(column).add(new TVCellData(item.getAirDate().substring(11, 16), item.getName(), true));
 						}
@@ -168,6 +171,8 @@ public class TVScheduleTable extends JTable{
 	
 	class TVTableCellRenderer implements TableCellRenderer{
 		//private static final long serialVersionUID = 1L;
+		private static final int HEADER_HEIGHT = 30;
+		private static final int ROW_HEIGHT = 20;
 		private Color headerBackground;
 		private Color timeBackground;
 		private Color defaultColor;
@@ -185,9 +190,10 @@ public class TVScheduleTable extends JTable{
 			
 			Font defaultFont = new Font(new JLabel().getFont().getFontName(), Font.PLAIN, 14);
 			Font headerFont = new Font(new JLabel().getFont().getFontName(), Font.PLAIN, 22);
-			
+
+			if(column == 0) table.setRowHeight(row, ROW_HEIGHT);
 			if (row == 0) {
-				table.setRowHeight(0, 30);
+				if(column == 0) table.setRowHeight(0, HEADER_HEIGHT);
 				
 				JPanel panel = new JPanel();
 				panel.setOpaque(true);
@@ -209,24 +215,30 @@ public class TVScheduleTable extends JTable{
 		    //panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
 			panel.setLayout(new BorderLayout());
 			
-			JLabel timeLabel = new SmoothLabel(" " + data.getTime() + " ");
-			timeLabel.setFont(defaultFont);
+			JLabel timeText = new SmoothLabel(" " + data.getTime() + " ");
+			timeText.setFont(defaultFont);
 			if (data.getName().equals(""))
-				timeLabel.setForeground(timeBackground);
-			timeLabel.setHorizontalAlignment(JLabel.LEFT);
-			timeLabel.setBackground(timeBackground);
-			timeLabel.setOpaque(true);
-			panel.add(timeLabel, BorderLayout.WEST);
+				timeText.setForeground(timeBackground);
+			else
+				timeText.setBorder(new MatteBorder(1,0,0,0, table.getGridColor()));
+
+			timeText.setHorizontalAlignment(JLabel.LEFT);
+			timeText.setBackground(timeBackground);
+			timeText.setOpaque(true);
+			panel.add(timeText, BorderLayout.WEST);
 			
-			JLabel label = new SmoothLabel(" " + data.getName());
-			label.setFont(defaultFont);
+			JLabel text = new SmoothLabel(" " + data.getName());
+			text.setFont(defaultFont);
+			if (!data.getName().equals("")) text.setBorder(new MatteBorder(1,0,0,0, table.getGridColor()));
 			if (data.isRunning())
-				label.setBorder(new MatteBorder(1,1,1,1, Color.RED));
+				text.setBorder(new MatteBorder(1,1,1,1, Color.RED));
 			
-			label.setOpaque(true);
-			label.setHorizontalAlignment(row == 0 ? JLabel.CENTER : JLabel.LEFT);
-			panel.add(label, BorderLayout.CENTER);
+			text.setOpaque(true);
+			text.setHorizontalAlignment(JLabel.LEFT);
+			panel.add(text, BorderLayout.CENTER);
 			setShowGrid(false);
+			if (!data.getName().equals("")) panel.setToolTipText(data.getName());
+			
 			return panel;
 		}
 	}
@@ -262,4 +274,5 @@ public class TVScheduleTable extends JTable{
 	        super.paintComponent(g2d);
 	    }
 	}
+
 }
