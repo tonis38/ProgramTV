@@ -17,7 +17,7 @@ import com.teamEclipse.TVItem;
 
 public class NCPlusParser {
 	
-	public static List <TVItem> items = new LinkedList<TVItem>();
+	private static List <TVItem> items = new LinkedList<TVItem>();
 	
     public List <TVItem> ParseData(){
         String url = "https://ncplus.pl/program-tv";
