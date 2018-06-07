@@ -60,14 +60,14 @@ public class CPParser {
     			String network = headers.get(i).attr("alt");					//Get channel name
     			String progname = program.select("div.newPtvTableProgramRight > a").text().replace("\"", "'");
     			String progtime = program.select("div.newPtvTableProgramLeft , div.newPtvTableProgramLeftFuture").text().replace("od ", "");	//Get program start time
-    			String progdate = dateFormat.format(date);						//Get program date
+    			String airdate = dateFormat.format(date);						//Get program date
     			String description = program.select("div.newPtvTableProgramRight > span").text();	//Get description
     			
     			
     			//Fill with data
     			item.setNetwork(network);
     			item.setName(progname);
-    			item.setAirDate(progdate + " " + progtime);
+    			item.setAirDate(airdate + " " + progtime);
     			item.setSummary(description);
     			    			
     			items.add(item);			// Add item to the list   		

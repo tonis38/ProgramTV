@@ -1,35 +1,61 @@
 package com.parser;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.teamEclipse.*;
+
 
 public class OnetParser {
-	public static void main(String[] args){
-	    String url = "https://programtv.onet.pl/";
-	    print("Fetching %s...", url);
+	
+	private static List <TVItem> items = new LinkedList<TVItem>();		//Create new list for TVItems
+	
+	public List <TVItem> ParseData(){
+	    String url = "https://programtv.onet.pl/";  					//URL address of the site
 	    
 	    Document doc = null;
 		try {
+			print("Fetching %s...", url);
 			doc = Jsoup.connect(url).get();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.printf("Connection error: cannot connect to %s. ", url);		// Cannot connect to site, throw error
 			e.printStackTrace();
+			return null;							//If cannot connect, return null list.
 		}
 	    Elements channels = doc.select("#emissions > div.inner > div.boxTVHolder");		//Extract channels from site
 	    print("%s", channels.first());
 	              
 	    for (Element channel : channels) {
-	    	print("*Channel name: %s", channel.select("span.tvName").text());				//Get and print channel name
-	    	Elements programs =  channel.select("li");									//Get all visible TV programs 
+	    	Elements programs =  channel.select("li");										//Get all visible TV programs 
+	    	
 	    	for(Element program : programs) {
-	    		print("\t*Program name: %s. Time: %s. Type: %s.", program.select("span.title").text(), program.select("span.hour").text(), program.select("span.type").text());		//Print TV program name and airing time
+	    		String channelname = channel.select("span.tvName").text();					//Get channel name
+	    		String programname = program.select("span.title").text();					//Get program name
+	    		String starttime = program.select("span.hour").text();						//Get program start time
+	    		String description = program.select("span.type").text();					//Get description
+	    		
+	    		//Get date	    		
+	    		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	        	Date date = new Date();
+	        	String progdate = dateFormat.format(date);
+	        	
+	    		TVItem item = new TVItem(0, programname, 0, 0, progdate, starttime, null, description, channelname, null);
+	    		items.add(item);
+	    		print("Adding - Channel name: %s. Program name: %s. Time: %s %s. Type: %s.", channelname, programname, starttime, progdate, description);
+	    		
 	    	}
 	    }
+	    
+		return items;						//Return list of TVItems
 	   	
 		}
 	    private static void print(String msg, Object... args) {
