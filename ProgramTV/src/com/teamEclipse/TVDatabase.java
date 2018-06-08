@@ -74,7 +74,8 @@ public class TVDatabase {
     
     public boolean insertItems(TVItem item) {
     	if (checkExist("tvitems", "name", item.getName()))
-    		return false;
+        	if (checkExist("tvitems", "airDate", item.getAirDate()))
+    			return false;
     	
     	try {
     		PreparedStatement prepStmt = conn.prepareStatement(

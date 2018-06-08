@@ -100,6 +100,11 @@ public class TVScheduleTable extends JTable{
 				}
 			}
 		}
+		for (List<TVCellData> list : data) {
+			while (list.size() < 30)
+				list.add(new TVCellData());
+		}
+			
 		
 		tableModel.setData(data, columnNames);
 		for (int i = 0; i < this.getColumnCount(); i++) {

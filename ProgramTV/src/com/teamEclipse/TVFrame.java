@@ -6,8 +6,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 import java.util.LinkedList;
-import java.util.Calendar;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -42,17 +40,14 @@ class TVPanel extends JPanel{
 		
 		add(menuPanel, BorderLayout.WEST);
 		
-		InitVariables();
+		itemsList = new LinkedList<TVItem>();
+		table = new TVScheduleTable();
 
 		date = LocalDate.now();
 		LoadDBData(date);
 
 		JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane, BorderLayout.CENTER);
-	}
-	private void InitVariables() {
-		itemsList = new LinkedList<TVItem>();
-		table = new TVScheduleTable();
 	}
 	
 	private void addMenuButton(String label, ActionListener listener) {
@@ -87,15 +82,13 @@ class TVPanel extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			date = LocalDate.now();
-			
 			LoadDBData(date);
 		}
 	}
 	class ShowYesterdayEvent implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			date = LocalDate.now().minusDays(1); 
-			
+			date = LocalDate.now().minusDays(1);
 			LoadDBData(date);
 		}
 	}
