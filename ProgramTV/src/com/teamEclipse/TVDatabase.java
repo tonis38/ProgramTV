@@ -92,6 +92,7 @@ public class TVDatabase {
     		prepStmt.execute();
     	} catch (SQLException e) {
             System.err.println("Error while inserting TVItem");
+            System.err.println("\t" + item.getName() + " " + item.getAirDate());
             //e.printStackTrace();
             return false;
         }
@@ -112,6 +113,7 @@ public class TVDatabase {
     		prepStmt.execute();
     	} catch (SQLException e) {
             System.err.println("Error while inserting TVNetwork");
+            System.err.println("\t" + network.getName());
             //e.printStackTrace();
             return false;
         }
@@ -142,6 +144,7 @@ public class TVDatabase {
     		prepStmt.setString(13, show.getNetwork());
     	} catch (SQLException e) {
             System.err.println("Error while inserting TVShow");
+            System.err.println("\t" + show.getName() + " " + show.getAirtime());
             //e.printStackTrace();
             return false;
         }
@@ -186,7 +189,7 @@ public class TVDatabase {
     }
     public List<TVNetwork> selectTVNetworks(){
     	List<TVNetwork> networks = new LinkedList<TVNetwork>();
-
+    	
     	try {
     		ResultSet result = stat.executeQuery("SELECT * FROM tvnetworks");
     		int ID;
