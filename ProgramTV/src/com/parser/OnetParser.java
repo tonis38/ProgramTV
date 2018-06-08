@@ -73,7 +73,7 @@ public class OnetParser {
 	   	
 		}
 	    private static void print(String msg, Object... args) {
-	    	System.out.println(String.format(msg, args));
+//	    	System.out.println(String.format(msg, args));
 	    }
 
 }
