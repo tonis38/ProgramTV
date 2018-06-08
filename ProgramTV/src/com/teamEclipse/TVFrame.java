@@ -89,10 +89,11 @@ class TVPanel extends JPanel{
 	class SynchronizeDatabaseEvent implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			CPParser cp = new CPParser();
-//			OnetParser onet = new OnetParser();
+//			CPParser cp = new CPParser();
+			OnetParser onet = new OnetParser();
 			ParserDBConnect export = new ParserDBConnect();
-			export.ExportToDB(cp.ParseData());
+			export.ExportToDB(onet.ParseData());
+			LoadDBData(date);
 		}
 	}	
 	class ShowTodayEvent implements ActionListener{
