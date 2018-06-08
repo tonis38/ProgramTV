@@ -50,14 +50,14 @@ public class TVScheduleTable extends JTable{
 			for (TVItem item : itemsList) {
 				if(item.getNetwork().equals(columnNames[i])) {
 					airTime = item.getAirDate().substring(11, 16);
-					networkItems.put( (timeToMinutes(airTime) - 180) % 1440, item );
+					networkItems.put( Math.floorMod((timeToMinutes(airTime) - 180), 1440), item );
 				}
 			}
 			values.add(networkItems);
 		}
 		
 		LocalDateTime ldt = LocalDateTime.now();
-		int currentTime = (timeToMinutes(DateTimeFormatter.ofPattern("HH:mm").format(ldt)) - 180 ) % 1440;
+		int currentTime = Math.floorMod((timeToMinutes(DateTimeFormatter.ofPattern("HH:mm").format(ldt)) - 180 ), 1440);
 		String today = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(ldt);
 
 		
@@ -76,12 +76,12 @@ public class TVScheduleTable extends JTable{
 					
 					//If next entry's air time is higher than currentTime that means that this entry is running right now
 					if (!foundCurrentShow && (nextKey == null || (nextKey > currentTime && entry.getKey() <= currentTime)) && item.getAirDate().substring(0, 10).equals(today)) {
-						if (Integer.parseInt(item.getAirDate().substring(11, 13)) == hour) {
+						if (Integer.parseInt(item.getAirDate().substring(11, 13)) == Math.floorMod(hour + 3, 24)) {
 							data.get(column).add(new TVCellData(item.getAirDate().substring(11, 16), item.getName(), item.getSummary(), true));
 						}
 						foundCurrentShow = true;
 					}
-					else if (Integer.parseInt(item.getAirDate().substring(11, 13)) == hour) {
+					else if (Integer.parseInt(item.getAirDate().substring(11, 13)) == Math.floorMod(hour + 3, 24)) {
 						data.get(column).add(new TVCellData(item.getAirDate().substring(11, 16), item.getName(), item.getSummary(), false));
 					}
 				}
