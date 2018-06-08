@@ -43,7 +43,7 @@ public class NCPlusParser {
         	Elements programs =  channel.select("a[href = #]");					//Select all visible TV programs 
         	
         	for(Element program : programs) {
-        		String programname = program.select("strong").text();			//Get program name
+        		String programname = program.select("strong").text().replaceAll("\"", "'");			//Get program name
         		String time = program.select("div.time-age > span").text();		//Get program airing time
         		
         		int a = programname.indexOf("odc");								//Extract part after ','
