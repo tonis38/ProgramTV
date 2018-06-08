@@ -77,12 +77,12 @@ public class TVScheduleTable extends JTable{
 					//If next entry's air time is higher than currentTime that means that this entry is running right now
 					if (!foundCurrentShow && (nextKey == null || (nextKey > currentTime && entry.getKey() <= currentTime)) && item.getAirDate().substring(0, 10).equals(today)) {
 						if (Integer.parseInt(item.getAirDate().substring(11, 13)) == hour) {
-							data.get(column).add(new TVCellData(item.getAirDate().substring(11, 16), item.getName(), true));
+							data.get(column).add(new TVCellData(item.getAirDate().substring(11, 16), item.getName(), item.getSummary(), true));
 						}
 						foundCurrentShow = true;
 					}
 					else if (Integer.parseInt(item.getAirDate().substring(11, 13)) == hour) {
-						data.get(column).add(new TVCellData(item.getAirDate().substring(11, 16), item.getName(), false));
+						data.get(column).add(new TVCellData(item.getAirDate().substring(11, 16), item.getName(), item.getSummary(), false));
 					}
 				}
 				column++;
@@ -236,7 +236,7 @@ public class TVScheduleTable extends JTable{
 			text.setHorizontalAlignment(JLabel.LEFT);
 			panel.add(text, BorderLayout.CENTER);
 			setShowGrid(false);
-			if (!data.getName().equals("")) panel.setToolTipText(data.getName());
+			if (!data.getName().equals("")) panel.setToolTipText("<html>" + data.getName() + (data.getSummary().equals("") ? "" : "<br><br>" + data.getSummary()) +"</html>");
 			
 			return panel;
 		}
@@ -244,19 +244,23 @@ public class TVScheduleTable extends JTable{
 	class TVCellData{
 		private String time;
 		private String name;
+		private String summary;
 		private boolean running;
 		public TVCellData() {
 			this.time = "00:00";
 			this.name = "";
+			this.summary = "";
 			this.running = false;
 		}
-		public TVCellData(String time, String name, boolean running) {
+		public TVCellData(String time, String name, String summary,boolean running) {
 			this.time = time;
 			this.name = name;
+			this.summary = summary;
 			this.running = running;
 		}
 		public String getTime() {return time;}
 		public String getName() {return name;}
+		public String getSummary() {return summary;}
 		public boolean isRunning() {return running;}
 	}
 
