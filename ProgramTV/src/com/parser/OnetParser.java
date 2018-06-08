@@ -39,7 +39,7 @@ public class OnetParser {
 	    	Elements programs =  channel.select("li");										//Get all visible TV programs 
 	    	
 	    	for(Element program : programs) {
-	    		String channelname = channel.select("span.tvName").text();					//Get channel name
+	    		String channelname = channel.select("span.tvName").text().replaceAll("\"", "'");					//Get channel name
 	    		String programname = program.select("span.title").text();					//Get program name
 	    		String starttime = program.select("span.hour").text();						//Get program start time
 	    		String description = program.select("span.type").text();					//Get description
@@ -68,6 +68,7 @@ public class OnetParser {
 	    	}
 	    }
 	    
+	    print("Parsing done....");
 		return items;						//Return list of TVItems
 	   	
 		}

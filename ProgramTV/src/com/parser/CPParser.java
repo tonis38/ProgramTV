@@ -73,7 +73,7 @@ public class CPParser {
     		}
     	}
     }   
-    	System.out.printf("Done....");
+    	System.out.printf("Parsing done....\n");
     	return items;
         
 	}
