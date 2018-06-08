@@ -67,7 +67,7 @@ class TVPanel extends JPanel{
 	}
 	
 	private JButton addMenuButton(String label, ActionListener listener) {
-		JButton button = new JButton(label);
+		JButton button = new SmoothButton(label);
 		button.addActionListener(listener);
 		return button;
 	}
@@ -131,6 +131,19 @@ class TVPanel extends JPanel{
 	class SmoothLabel extends JLabel {
 
 	    public SmoothLabel(String text) {
+	        super(text);
+	    }
+
+	    public void paintComponent(Graphics g) {
+	        Graphics2D g2d = (Graphics2D) g;
+	        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+	        super.paintComponent(g2d);
+	    }
+	}	
+	class SmoothButton extends JButton {
+
+	    public SmoothButton(String text) {
 	        super(text);
 	    }
 
