@@ -39,16 +39,20 @@ public class TVScheduleTable extends JTable{
 	}
 	
 	public void UpdateTable(List<TVItem> itemsList) {
-		String [] columnNames = { "TVP 1", "TVP 2", "TV 4", "POLSAT", "POLSAT News"};
+		String [] columnNamesT = { "TVP 1", "TVP 2", "TV 4", "POLSAT", "TVN", "TVN 7", "TV Puls"};
+		List<String> columnNames = new ArrayList<String>();
+		for (String s : columnNamesT)
+			columnNames.add(s);
+		
 		List<List<TVCellData>> data = new ArrayList<List<TVCellData>>();
 		List<TreeMap<Integer, TVItem>> values = new ArrayList<TreeMap<Integer,TVItem>>();
 		String airTime = "";
 
 		//Sort items by station and air time
-		for (int i = 0; i < columnNames.length; i++) {
+		for (int i = 0; i < columnNames.size(); i++) {
 			TreeMap<Integer, TVItem> networkItems = new TreeMap<Integer, TVItem>();
 			for (TVItem item : itemsList) {
-				if(item.getNetwork().equals(columnNames[i])) {
+				if(item.getNetwork().equals(columnNames.get(i))) {
 					airTime = item.getAirDate().substring(11, 16);
 					networkItems.put( Math.floorMod((timeToMinutes(airTime) - 180), 1440), item );
 				}
@@ -61,7 +65,7 @@ public class TVScheduleTable extends JTable{
 		String today = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(ldt);
 
 		
-		for(int i = 0; i < columnNames.length; i++)
+		for(int i = 0; i < columnNames.size(); i++)
 			data.add(new ArrayList<TVCellData>());
 		
 		boolean foundCurrentShow;
@@ -107,10 +111,11 @@ public class TVScheduleTable extends JTable{
 			
 		
 		tableModel.setData(data, columnNames);
+		tableModel.fireTableDataChanged();
+		tableModel.fireTableStructureChanged();
 		for (int i = 0; i < this.getColumnCount(); i++) {
 			this.getColumnModel().getColumn(i).setPreferredWidth(COLUMN_WIDTH);
 		}
-		tableModel.fireTableDataChanged();
 	}
 	
 	private Integer timeToMinutes(String time) {
@@ -121,28 +126,29 @@ public class TVScheduleTable extends JTable{
 		private static final long serialVersionUID = 1L;
 		
 		private List<List<TVCellData>> data;
-	    private String[] columnNames;
+	    private List<String> columnNames;
 	    
 	    @Override
 	    public Class<?> getColumnClass(int columnIndex){
 	    	return String.class;
 	    }
 	    
-	    public TVTableModel(List<List<TVCellData>> data, String[] columnNames) {
+	    public TVTableModel(List<List<TVCellData>> data, List<String> columnNames) {
 	        this.data = data;
 	        this.columnNames = columnNames;
 	    }
 	    public TVTableModel() { 
-	    	String [] columnNames = { "", "", "", "", ""};
+	    	List<String> columnNames = new ArrayList<String>();
+	    		columnNames.add("");
 			List<List<TVCellData>> values = new ArrayList<List<TVCellData>>();
-			for (int i = 0; i < columnNames.length; i++) {
+			for (int i = 0; i < columnNames.size(); i++) {
 				List<TVCellData> networkItems = new ArrayList<TVCellData>();
 				networkItems.add(new TVCellData());
 				values.add(networkItems);
 			}
-			this.setData(values, columnNames);
+			setData(values, columnNames);
 	    }
-	    public void setData(List<List<TVCellData>> data, String[] columnNames) {
+	    public void setData(List<List<TVCellData>> data, List<String> columnNames) {
 	        this.data = data;
 	        this.columnNames = columnNames;
 	    }
@@ -152,12 +158,12 @@ public class TVScheduleTable extends JTable{
 	    }
 	    @Override
 	    public int getColumnCount() {
-	        return columnNames.length;
+	        return columnNames.size();
 	    }
 	    @Override
 	    public Object getValueAt(int row, int column) {
 	    	if(row == 0)
-	    		return columnNames[column];
+	    		return columnNames.get(column);
 	    	
 	        return data.get(column).get(row-1);
 	    }
