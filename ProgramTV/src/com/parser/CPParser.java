@@ -57,7 +57,8 @@ public class CPParser {
     			
     			TVItem item = new TVItem();										//Make new temporary item
     			String network = headers.get(i).attr("alt");					//Get channel name
-    			String progname = program.select("div.newPtvTableProgramRight > a").text().replace("\"", "'");
+    			String progname = program.select("div.newPtvTableProgramRight > a").text();
+    			progname = progname.replace("\"", "\'");
     			String progtime = program.select("div.newPtvTableProgramLeft , div.newPtvTableProgramLeftFuture").text().replace("od ", "");	//Get program start time
     			String airdate = dateFormat.format(date);						//Get program date
     			String description = program.select("div.newPtvTableProgramRight > span").text();	//Get description
