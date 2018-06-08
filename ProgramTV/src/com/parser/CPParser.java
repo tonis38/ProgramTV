@@ -56,7 +56,6 @@ public class CPParser {
     		for(Element program : programs) {
     			
     			TVItem item = new TVItem();										//Make new temporary item
-    			
     			String network = headers.get(i).attr("alt");					//Get channel name
     			String progname = program.select("div.newPtvTableProgramRight > a").text().replace("\"", "'");
     			String progtime = program.select("div.newPtvTableProgramLeft , div.newPtvTableProgramLeftFuture").text().replace("od ", "");	//Get program start time
@@ -74,7 +73,7 @@ public class CPParser {
     		}
     	}
     }   
-    
+    	System.out.printf("Done....");
     	return items;
         
 	}
