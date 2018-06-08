@@ -2,6 +2,7 @@ package com.parser;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -48,9 +49,21 @@ public class OnetParser {
 	        	Date date = new Date();
 	        	String progdate = dateFormat.format(date);
 	        	
-	    		TVItem item = new TVItem(0, programname, 0, 0, progdate, starttime, null, description, channelname, null);
+	        	dateFormat = new SimpleDateFormat("HH:mm");
+	        	Date time = null;
+	        	try {
+					time = dateFormat.parse(starttime);
+				} catch (ParseException e) {
+					System.err.printf("Cannot parse time...");
+					//e.printStackTrace();
+				}
+	        	
+	        	starttime = dateFormat.format(time);
+	        	
+	        	
+	    		TVItem item = new TVItem(0, programname, 0, 0, progdate + " " + starttime, null, null, description, channelname, null);
 	    		items.add(item);
-	    		print("Adding - Channel name: %s. Program name: %s. Time: %s %s. Type: %s.", channelname, programname, starttime, progdate, description);
+	    		print("Adding - Channel name: %s. Program name: %s. Time: %s %s. Type: %s.", channelname, programname, progdate, starttime, description);
 	    		
 	    	}
 	    }
