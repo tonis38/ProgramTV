@@ -255,12 +255,14 @@ public class TVDatabase {
     	return shows;
     }
     private boolean checkExist(String tableName, String column, String value) {
+    	ResultSet result;
     	try {
-    		ResultSet result = stat.executeQuery("SELECT * FROM " + tableName + " WHERE " + column + "=\"" + value + "\"");
+    		result = stat.executeQuery("SELECT * FROM " + tableName + " WHERE " + column + "=\"" + value + "\"");
     		if (!result.next())
     			return false;
     	} catch (SQLException e) {
     		System.err.println("Error while searching for existing records!");
+    		System.err.println("\t" + "SELECT * FROM " + tableName + " WHERE " + column + "=\"" + value + "\"");
             //e.printStackTrace();
             return false;
         }
