@@ -1,16 +1,16 @@
 package com.teamEclipse;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 import java.util.List;
-import java.util.Vector;
 import java.util.LinkedList;
-import java.util.ArrayList;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import com.parser.*;
 
 public class TVFrame extends JFrame{
@@ -24,6 +24,7 @@ class TVPanel extends JPanel{
 	private JPanel menuPanel;
 	private List<TVItem> itemsList;
 	private TVScheduleTable table;
+	LocalDate date;
 	
 	public TVPanel() {
 		setLayout(new BorderLayout());
@@ -31,16 +32,20 @@ class TVPanel extends JPanel{
 		menuPanel = new JPanel();
 		menuPanel.setLayout(new GridLayout(20,1));
 		ActionListener synchronize = new SynchronizeDatabaseEvent();
+		ActionListener today = new ShowTodayEvent();
+		ActionListener yesterday = new ShowYesterdayEvent();
 		addMenuButton("Synchronizuj", synchronize);
-		addMenuButton("Dzisiaj", null);
+		addMenuButton("Dzisiaj", today);
+		addMenuButton("Wczoraj", yesterday);
 		addMenuButton("Szukaj", null);
 		addMenuButton("Pomoc", null);
 		
 		add(menuPanel, BorderLayout.WEST);
 		
 		InitVariables();
-		
-		LoadDBData();
+
+		date = LocalDate.now();
+		LoadDBData(date);
 
 		JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(scrollPane, BorderLayout.CENTER);
@@ -56,11 +61,18 @@ class TVPanel extends JPanel{
 		menuPanel.add(button);
 	}
 	
-	private void LoadDBData() {
+	private void LoadDBData(LocalDate date) {
 		TVDatabase db = new TVDatabase();
 		itemsList = db.selectTVItems();
+		String d = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
-		table.UpdateTable(itemsList);
+		List<TVItem> itemsToDisplay = new LinkedList<TVItem>();
+		
+		for (TVItem item : itemsList) {
+			if (item.getAirDate().substring(0, 10).equals(d))
+				itemsToDisplay.add(item);
+		}
+		table.UpdateTable(itemsToDisplay);
 	}
 	
 	class SynchronizeDatabaseEvent implements ActionListener{
@@ -69,8 +81,22 @@ class TVPanel extends JPanel{
 			CPParser cp = new CPParser();
 			ParserDBConnect export = new ParserDBConnect();
 			export.ExportToDB(cp.ParseData());
+		}
+	}	
+	class ShowTodayEvent implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			date = LocalDate.now();
 			
-			LoadDBData();
+			LoadDBData(date);
+		}
+	}
+	class ShowYesterdayEvent implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			date = LocalDate.now().minusDays(1); 
+			
+			LoadDBData(date);
 		}
 	}
 }

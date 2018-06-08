@@ -7,8 +7,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.SystemColor;
-import java.awt.event.MouseEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,13 +17,9 @@ import java.util.TreeMap;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.text.DefaultCaret;
-import javax.swing.text.View;
 
 public class TVScheduleTable extends JTable{
 	/**
@@ -62,9 +56,9 @@ public class TVScheduleTable extends JTable{
 			values.add(networkItems);
 		}
 		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 		LocalDateTime ldt = LocalDateTime.now();
-		int currentTime = timeToMinutes(formatter.format(ldt));
+		int currentTime = timeToMinutes(DateTimeFormatter.ofPattern("HH:mm").format(ldt));
+		String today = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(ldt);
 
 		
 		for(int i = 0; i < columnNames.length; i++)
@@ -81,7 +75,7 @@ public class TVScheduleTable extends JTable{
 					Integer nextKey = map.higherKey(entry.getKey());
 					
 					//If next entry's air time is higher than currentTime that means that this entry is running right now
-					if (!foundCurrentShow && (nextKey == null || nextKey > currentTime) ) {
+					if (!foundCurrentShow && (nextKey == null || (nextKey > currentTime && entry.getKey() <= currentTime)) && item.getAirDate().substring(0, 10).equals(today)) {
 						if (Integer.parseInt(item.getAirDate().substring(11, 13)) == hour) {
 							data.get(column).add(new TVCellData(item.getAirDate().substring(11, 16), item.getName(), true));
 						}
