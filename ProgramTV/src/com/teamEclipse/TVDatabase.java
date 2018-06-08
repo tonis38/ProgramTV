@@ -120,7 +120,8 @@ public class TVDatabase {
     }
     public boolean insertShows(TVShow show) {
     	if (checkExist("tvshows", "name", show.getName()))
-    		return false;
+        	if (checkExist("tvshows", "network", show.getNetwork()))
+        		return false;
     	
     	
     	try {

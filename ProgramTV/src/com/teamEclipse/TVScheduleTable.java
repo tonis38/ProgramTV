@@ -50,14 +50,14 @@ public class TVScheduleTable extends JTable{
 			for (TVItem item : itemsList) {
 				if(item.getNetwork().equals(columnNames[i])) {
 					airTime = item.getAirDate().substring(11, 16);
-					networkItems.put( timeToMinutes(airTime) , item );
+					networkItems.put( (timeToMinutes(airTime) - 180) % 1440, item );
 				}
 			}
 			values.add(networkItems);
 		}
 		
 		LocalDateTime ldt = LocalDateTime.now();
-		int currentTime = timeToMinutes(DateTimeFormatter.ofPattern("HH:mm").format(ldt));
+		int currentTime = (timeToMinutes(DateTimeFormatter.ofPattern("HH:mm").format(ldt)) - 180 ) % 1440;
 		String today = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(ldt);
 
 		

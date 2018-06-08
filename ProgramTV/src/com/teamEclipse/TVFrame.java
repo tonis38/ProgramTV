@@ -20,6 +20,9 @@ public class TVFrame extends JFrame{
 
 class TVPanel extends JPanel{
 	private JPanel menuPanel;
+	private JPanel centralPanel;
+	private JPanel datePanel;
+	private JLabel dateLabel;
 	private List<TVItem> itemsList;
 	private TVScheduleTable table;
 	LocalDate date;
@@ -29,31 +32,44 @@ class TVPanel extends JPanel{
 		
 		menuPanel = new JPanel();
 		menuPanel.setLayout(new GridLayout(20,1));
-		ActionListener synchronize = new SynchronizeDatabaseEvent();
-		ActionListener today = new ShowTodayEvent();
-		ActionListener yesterday = new ShowYesterdayEvent();
-		addMenuButton("Synchronizuj", synchronize);
-		addMenuButton("Dzisiaj", today);
-		addMenuButton("Wczoraj", yesterday);
-		addMenuButton("Szukaj", null);
-		addMenuButton("Pomoc", null);
 		
+		menuPanel.add(addMenuButton("Synchronizuj", new SynchronizeDatabaseEvent()));
+		menuPanel.add(addMenuButton("Dzisiaj", new ShowTodayEvent()));
+		menuPanel.add(addMenuButton("Wczoraj", new ShowYesterdayEvent()));
+		menuPanel.add(addMenuButton("Szukaj", null));
+		menuPanel.add(addMenuButton("Pomoc", null));
 		add(menuPanel, BorderLayout.WEST);
+		
+		centralPanel = new JPanel();
+		centralPanel.setLayout(new BorderLayout());
+		datePanel = new JPanel();
+		datePanel.setLayout(new BorderLayout());
+
+		date = LocalDate.now();
+		dateLabel = new SmoothLabel(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+		dateLabel.setHorizontalAlignment(JLabel.CENTER);
+		dateLabel.setFont(new Font(new JLabel().getFont().getFontName(), Font.PLAIN, 22));
+		datePanel.add(dateLabel, BorderLayout.CENTER);
+		datePanel.add(addMenuButton("Poprzedni", new ShowPrevDayEvent()), BorderLayout.WEST);
+		datePanel.add(addMenuButton("Następny", new ShowNextDayEvent()), BorderLayout.EAST);
+		
+
+		centralPanel.add(datePanel, BorderLayout.NORTH);
 		
 		itemsList = new LinkedList<TVItem>();
 		table = new TVScheduleTable();
 
-		date = LocalDate.now();
 		LoadDBData(date);
 
 		JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		add(scrollPane, BorderLayout.CENTER);
+		centralPanel.add(scrollPane, BorderLayout.CENTER);
+		add(centralPanel, BorderLayout.CENTER);
 	}
 	
-	private void addMenuButton(String label, ActionListener listener) {
+	private JButton addMenuButton(String label, ActionListener listener) {
 		JButton button = new JButton(label);
 		button.addActionListener(listener);
-		menuPanel.add(button);
+		return button;
 	}
 	
 	private void LoadDBData(LocalDate date) {
@@ -74,6 +90,7 @@ class TVPanel extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			CPParser cp = new CPParser();
+//			OnetParser onet = new OnetParser();
 			ParserDBConnect export = new ParserDBConnect();
 			export.ExportToDB(cp.ParseData());
 		}
@@ -82,6 +99,7 @@ class TVPanel extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			date = LocalDate.now();
+			dateLabel.setText(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
 			LoadDBData(date);
 		}
 	}
@@ -89,7 +107,38 @@ class TVPanel extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			date = LocalDate.now().minusDays(1);
+			dateLabel.setText(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
 			LoadDBData(date);
 		}
+	}
+	class ShowNextDayEvent implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			date = date.plusDays(1);
+			dateLabel.setText(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+			LoadDBData(date);
+		}
+	}
+	class ShowPrevDayEvent implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			date = date.minusDays(1);
+			dateLabel.setText(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+			LoadDBData(date);
+		}
+	}
+
+	class SmoothLabel extends JLabel {
+
+	    public SmoothLabel(String text) {
+	        super(text);
+	    }
+
+	    public void paintComponent(Graphics g) {
+	        Graphics2D g2d = (Graphics2D) g;
+	        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+	        super.paintComponent(g2d);
+	    }
 	}
 }
