@@ -51,9 +51,8 @@ public class OnetParser {
 					Elements programs = channel.select("li"); // Get all visible TV programs
 
 					for (Element program : programs) {
-						String channelname = channel.select("span.tvName").text().replace("\"", "'"); // Get channel
-																											// name
-						String programname = program.select("span.title").text(); // Get program name
+						String channelname = channel.select("span.tvName").text(); // Get channel name
+						String programname = program.select("span.title").text().replace("\"", "'"); // Get program name
 						String starttime = program.select("span.hour").text(); // Get program start time
 						String description = program.select("span.type").text(); // Get description
 
