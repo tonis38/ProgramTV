@@ -46,7 +46,7 @@ class TVPanel extends JPanel{
 		datePanel.setLayout(new BorderLayout());
 
 		date = LocalDate.now();
-		dateLabel = new SmoothLabel(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+		dateLabel = new SmoothLabel(date.format(DateTimeFormatter.ofPattern("EEEE (dd-MM-yyyy)")));
 		dateLabel.setHorizontalAlignment(JLabel.CENTER);
 		dateLabel.setFont(new Font(new JLabel().getFont().getFontName(), Font.PLAIN, 22));
 		datePanel.add(dateLabel, BorderLayout.CENTER);
@@ -90,9 +90,8 @@ class TVPanel extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent event) {
 //			CPParser cp = new CPParser();
-			OnetParser onet = new OnetParser();
 			ParserDBConnect export = new ParserDBConnect();
-			export.ExportToDB(onet.ParseData());
+			export.ExportToDB(new OnetParser().ParseData());
 			LoadDBData(date);
 		}
 	}	
@@ -100,7 +99,7 @@ class TVPanel extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			date = LocalDate.now();
-			dateLabel.setText(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+			dateLabel.setText(date.format(DateTimeFormatter.ofPattern("EEEE (dd-MM-yyyy)")));
 			LoadDBData(date);
 		}
 	}
@@ -108,7 +107,7 @@ class TVPanel extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			date = LocalDate.now().minusDays(1);
-			dateLabel.setText(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+			dateLabel.setText(date.format(DateTimeFormatter.ofPattern("EEEE (dd-MM-yyyy)")));
 			LoadDBData(date);
 		}
 	}
@@ -116,7 +115,7 @@ class TVPanel extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			date = date.plusDays(1);
-			dateLabel.setText(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+			dateLabel.setText(date.format(DateTimeFormatter.ofPattern("EEEE (dd-MM-yyyy)")));
 			LoadDBData(date);
 		}
 	}
@@ -124,7 +123,7 @@ class TVPanel extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			date = date.minusDays(1);
-			dateLabel.setText(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+			dateLabel.setText(date.format(DateTimeFormatter.ofPattern("EEEE (dd-MM-yyyy)")));
 			LoadDBData(date);
 		}
 	}
