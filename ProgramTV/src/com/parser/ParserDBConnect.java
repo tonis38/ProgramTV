@@ -5,15 +5,16 @@ import java.util.List;
 import com.teamEclipse.*;
 
 public class ParserDBConnect {
+	private TVDatabase database;
+	
+	public ParserDBConnect() {
+		database = new TVDatabase();
+	}
 	
 	public void ExportToDB(List<TVItem> items) {
-		List<TVItem> list = items;
-		TVDatabase database = new TVDatabase();
 				
-		try {			
-				for(int i = 0 ; i < list.size(); i++) {
-				database.insertItems(list.get(i));			
-				}
+		try {
+			database.insertItems(items);
 		}
 		catch(NullPointerException e){
 			System.err.printf("Null input list. Cannot connect to parsed site or error in parsing data.");

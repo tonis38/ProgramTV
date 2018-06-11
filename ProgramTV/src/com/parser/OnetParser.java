@@ -19,21 +19,19 @@ import com.teamEclipse.*;
 
 public class OnetParser {
 
-	private static List<TVItem> items = new LinkedList<TVItem>(); // Create new list for TVItems
+	private List<TVItem> items;
 
+	public OnetParser() {
+		items = new LinkedList<TVItem>(); // Create new list for TVItems
+	}
+	
 	public List<TVItem> ParseData() {
 
 		String url = null;
 
 		for (int i = -1; i <= 1; i++) {
 			for (int j = 1; j <= 1; j++) {
-				if (i < 0 || i == 0) {
-					url = "https://programtv.onet.pl/?dzien=" + i + "&strona=" + j;
-				} else if (i > 0) {
-					url = "https://programtv.onet.pl/?dzien=+" + i + "&strona=" + j;
-				} else {
-					return null;
-				}
+				url = "https://programtv.onet.pl/?dzien=" + i + "&strona=" + j;
 
 				Document doc = null;
 				try {
@@ -72,11 +70,9 @@ public class OnetParser {
 
 						starttime = dateFormat.format(time);
 
-						TVItem item = new TVItem(0, programname, 0, 0, progdate + " " + starttime, null, null,
-								description, channelname, null);
-						items.add(item);
-						 print("Adding - Channel name: %s. Program name: %s. Time: %s %s. Type: %s.",
-						 channelname, programname, progdate, starttime, description);
+						items.add(new TVItem(0, programname, 0, 0, progdate + " " + starttime, null, null,description, channelname, null));
+//						 print("Adding - Channel name: %s. Program name: %s. Time: %s %s. Type: %s.",
+//						 channelname, programname, progdate, starttime, description);
 
 					}
 				}
@@ -85,7 +81,6 @@ public class OnetParser {
 
 		print("Parsing done....");
 		return items; // Return list of TVItems
-
 	}
 
 	private static void print(String msg, Object... args) {
