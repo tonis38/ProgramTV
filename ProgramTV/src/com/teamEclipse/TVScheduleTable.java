@@ -41,8 +41,11 @@ public class TVScheduleTable extends JTable{
 	public void UpdateTable(List<TVItem> itemsList, List<TVNetwork> networksList) {
 //		String [] columnNamesT = { "TVP 1", "TVP 2", "TV 4", "POLSAT", "TVN", "TVN 7", "TV Puls"};
 		List<String> columnNames = new ArrayList<String>();
-		for (TVNetwork network : networksList)
-			columnNames.add(network.getName());
+		if (networksList.isEmpty())
+			columnNames.add("");
+		else
+			for (TVNetwork network : networksList)
+				columnNames.add(network.getName());
 		
 		List<List<TVCellData>> data = new ArrayList<List<TVCellData>>();
 		List<TreeMap<Integer, TVItem>> values = new ArrayList<TreeMap<Integer,TVItem>>();
