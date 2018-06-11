@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import com.teamEclipse.TVItem;
 import com.teamEclipse.TVNetwork;
@@ -102,14 +103,16 @@ public class TVDatabase {
     	
     	return true;
     }
-    public boolean insertNetworks(List<TVNetwork> networks) {
+    public boolean insertNetworks(Set<TVNetwork> networks) {
     	try {
 	    	PreparedStatement prepStmt = conn.prepareStatement(
 	    				"insert into tvnetworks values (NULL, ?, ?, ?);");
 
 	    	for (TVNetwork network : networks) {
-        		if (checkExist("tvnetworks", "name", network.getName()))
+        		if (checkExist("tvnetworks", "name", network.getName())) {
         			continue;
+        		}
+        		
 	    		conn.setAutoCommit(false);
 	    		prepStmt.setString(1, network.getName());
 	    		prepStmt.setString(2, network.getCountry());
@@ -277,7 +280,7 @@ public class TVDatabase {
     		System.err.println("Error while searching for existing records!");
     		System.err.println("\t" + "SELECT * FROM " + tableName + " WHERE " + column + "=\"" + value + "\"");
             //e.printStackTrace();
-            return false;
+            return true;
         }
     	
     	return true;

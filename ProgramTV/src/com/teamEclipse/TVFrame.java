@@ -83,7 +83,7 @@ class TVPanel extends JPanel{
 			if (item.getAirDate().substring(0, 10).equals(d))
 				itemsToDisplay.add(item);
 		}
-		table.UpdateTable(itemsToDisplay);
+		table.UpdateTable(itemsToDisplay, db.selectTVNetworks());
 	}
 	
 	class SynchronizeDatabaseEvent implements ActionListener{
@@ -91,7 +91,10 @@ class TVPanel extends JPanel{
 		public void actionPerformed(ActionEvent event) {
 //			CPParser cp = new CPParser();
 			ParserDBConnect export = new ParserDBConnect();
-			export.ExportToDB(new OnetParser().ParseData());
+			OnetParser parser = new OnetParser();
+			parser.ParseData();
+			export.ExportItems(parser.getItems());
+			export.ExportNetworks(parser.getNetworks());
 			LoadDBData(date);
 		}
 	}	
