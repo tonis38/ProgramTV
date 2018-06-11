@@ -29,7 +29,7 @@ public class OnetParser {
 
 		String url = null;
 
-		for (int i = -1; i <= 1; i++) {
+		for (int i = -1; i <= 5; i++) {
 			for (int j = 1; j <= 1; j++) {
 				url = "https://programtv.onet.pl/?dzien=" + i + "&strona=" + j;
 
