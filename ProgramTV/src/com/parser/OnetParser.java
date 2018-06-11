@@ -19,7 +19,7 @@ import org.jsoup.select.Elements;
 
 import com.teamEclipse.*;
 
-public class OnetParser {
+public class OnetParser extends Parser{
 
 	private List<TVItem> items;
 	private Set<TVNetwork> networks;
