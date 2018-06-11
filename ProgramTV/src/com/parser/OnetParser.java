@@ -7,8 +7,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,12 +22,14 @@ import com.teamEclipse.*;
 public class OnetParser {
 
 	private List<TVItem> items;
+	private Set<TVNetwork> networks;
 
 	public OnetParser() {
 		items = new LinkedList<TVItem>(); // Create new list for TVItems
+		networks = new HashSet<TVNetwork>();
 	}
 	
-	public List<TVItem> ParseData() {
+	public void ParseData() {
 
 		String url = null;
 
@@ -41,12 +45,12 @@ public class OnetParser {
 					System.err.printf("Connection error: cannot connect to %s. ", url); // Cannot connect to site, throw
 																						// error
 					e.printStackTrace();
-					return null; // If cannot connect, return null list.
 				}
 				Elements channels = doc.select("#emissions > div.inner > div.boxTVHolder"); // Extract channels from
 				
 				for (Element channel : channels) {
 					Elements programs = channel.select("li"); // Get all visible TV programs
+					networks.add(new TVNetwork(0, channel.select("span.tvName").text(), null, null));
 
 					for (Element program : programs) {
 						String channelname = channel.select("span.tvName").text(); // Get channel name
@@ -80,7 +84,14 @@ public class OnetParser {
 		}
 
 		print("Parsing done....");
-		return items; // Return list of TVItems
+	}
+	
+	public List<TVItem> getItems(){
+		return items;
+	}
+	
+	public Set<TVNetwork> getNetworks(){
+		return networks;
 	}
 
 	private static void print(String msg, Object... args) {
