@@ -37,6 +37,7 @@ public class TVDatabase {
     	try {
     		conn = DriverManager.getConnection(DB_URL);
     		stat = conn.createStatement();
+    		conn.setAutoCommit(false);
     	} catch(SQLException e) {
             System.err.println("Can't connect to database!");
             //e.printStackTrace();
@@ -81,7 +82,7 @@ public class TVDatabase {
 	        	if (checkExist("tvitems", "name", item.getName()))
 	            	if (checkExist("tvitems", "airDate", item.getAirDate()))
 	        			continue;
-	    		conn.setAutoCommit(false);
+	        	
 	    		prepStmt.setString(1, item.getName());
 	    		prepStmt.setInt(2, item.getSeason());
 	    		prepStmt.setInt(3, item.getNumber());
@@ -109,11 +110,9 @@ public class TVDatabase {
 	    				"insert into tvnetworks values (NULL, ?, ?, ?);");
 
 	    	for (TVNetwork network : networks) {
-        		if (checkExist("tvnetworks", "name", network.getName())) {
+        		if (checkExist("tvnetworks", "name", network.getName()))
         			continue;
-        		}
         		
-	    		conn.setAutoCommit(false);
 	    		prepStmt.setString(1, network.getName());
 	    		prepStmt.setString(2, network.getCountry());
 	    		prepStmt.setString(3, network.getLogo());
@@ -123,7 +122,7 @@ public class TVDatabase {
     		conn.commit();
     	} catch (SQLException e) {
             System.err.println("Error while inserting TVNetwork");
-            //e.printStackTrace();
+            e.printStackTrace();
             return false;
         }
     	
@@ -138,7 +137,6 @@ public class TVDatabase {
         		if (checkExist("tvshows", "name", show.getName()))
         			if (checkExist("tvshows", "network", show.getNetwork()))
             			continue;
-	    		conn.setAutoCommit(false);
 	    		prepStmt.setString(1, show.getName());
 	    		prepStmt.setString(2, show.getLanguage());
 	    		prepStmt.setInt(3, show.getType().getValue());
