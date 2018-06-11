@@ -16,7 +16,7 @@ import org.jsoup.select.Elements;
 
 import com.teamEclipse.*;
 
-public class CPParser {
+public class CPParser extends Parser{
 
 	private List<TVItem> items;
 	private Set<TVNetwork> networks;
@@ -36,6 +36,7 @@ public class CPParser {
 		} catch (IOException e) {
 			System.err.printf("Connection error: cannot connect to %s. ", url); // Cannot connect to site, throw error
 			// e.printStackTrace();
+			return;
 		}
 
 		// If connected, try to parse data
