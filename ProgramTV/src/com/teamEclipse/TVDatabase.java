@@ -72,79 +72,89 @@ public class TVDatabase {
     	return true;
     }
     
-    public boolean insertItems(TVItem item) {
-    	if (checkExist("tvitems", "name", item.getName()))
-        	if (checkExist("tvitems", "airDate", item.getAirDate()))
-    			return false;
-    	
+    public boolean insertItems(List<TVItem> items) {
     	try {
     		PreparedStatement prepStmt = conn.prepareStatement(
     				"insert into tvitems values (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-    		prepStmt.setString(1, item.getName());
-    		prepStmt.setInt(2, item.getSeason());
-    		prepStmt.setInt(3, item.getNumber());
-    		prepStmt.setString(4, item.getAirDate());
-    		prepStmt.setString(5, item.getRuntime());
-    		prepStmt.setString(6, item.getImage());
-    		prepStmt.setString(7, item.getSummary());
-    		prepStmt.setString(8, item.getNetwork());
-    		prepStmt.setString(9, item.getShow());
-    		prepStmt.execute();
+    		for (TVItem item : items) {
+	        	if (checkExist("tvitems", "name", item.getName()))
+	            	if (checkExist("tvitems", "airDate", item.getAirDate()))
+	        			continue;
+	    		conn.setAutoCommit(false);
+	    		prepStmt.setString(1, item.getName());
+	    		prepStmt.setInt(2, item.getSeason());
+	    		prepStmt.setInt(3, item.getNumber());
+	    		prepStmt.setString(4, item.getAirDate());
+	    		prepStmt.setString(5, item.getRuntime());
+	    		prepStmt.setString(6, item.getImage());
+	    		prepStmt.setString(7, item.getSummary());
+	    		prepStmt.setString(8, item.getNetwork());
+	    		prepStmt.setString(9, item.getShow());
+	    		prepStmt.addBatch();
+    		}
+	    	prepStmt.executeBatch();
+	    	conn.commit();
     	} catch (SQLException e) {
             System.err.println("Error while inserting TVItem");
-            System.err.println("\t" + item.getName() + " " + item.getAirDate());
             //e.printStackTrace();
             return false;
         }
     	
     	return true;
     }
-    public boolean insertNetworks(TVNetwork network) {
-    	if (checkExist("tvnetworks", "name", network.getName()))
-    		return false;
-    	
-    	
+    public boolean insertNetworks(List<TVNetwork> networks) {
     	try {
-    		PreparedStatement prepStmt = conn.prepareStatement(
-    				"insert into tvnetworks values (NULL, ?, ?, ?);");
-    		prepStmt.setString(1, network.getName());
-    		prepStmt.setString(2, network.getCountry());
-    		prepStmt.setString(3, network.getLogo());
-    		prepStmt.execute();
+	    	PreparedStatement prepStmt = conn.prepareStatement(
+	    				"insert into tvnetworks values (NULL, ?, ?, ?);");
+
+	    	for (TVNetwork network : networks) {
+        		if (checkExist("tvnetworks", "name", network.getName()))
+        			continue;
+	    		conn.setAutoCommit(false);
+	    		prepStmt.setString(1, network.getName());
+	    		prepStmt.setString(2, network.getCountry());
+	    		prepStmt.setString(3, network.getLogo());
+	    		prepStmt.addBatch();
+	    	}
+    		prepStmt.executeBatch();
+    		conn.commit();
     	} catch (SQLException e) {
             System.err.println("Error while inserting TVNetwork");
-            System.err.println("\t" + network.getName());
             //e.printStackTrace();
             return false;
         }
     	
     	return true;
     }
-    public boolean insertShows(TVShow show) {
-    	if (checkExist("tvshows", "name", show.getName()))
-        	if (checkExist("tvshows", "network", show.getNetwork()))
-        		return false;
-    	
-    	
+    public boolean insertShows(List<TVShow> shows) {
     	try {
     		PreparedStatement prepStmt = conn.prepareStatement(
     				"insert into tvshows values (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-    		prepStmt.setString(1, show.getName());
-    		prepStmt.setString(2, show.getLanguage());
-    		prepStmt.setInt(3, show.getType().getValue());
-    		prepStmt.setInt(4, show.getStatus().getValue());
-    		prepStmt.setInt(5, show.getRuntime());
-    		prepStmt.setString(6, show.getPremiereDate());
-    		prepStmt.setString(7, show.getOfficialSite());
-    		prepStmt.setString(8, show.getSummary());
-    		prepStmt.setString(9, show.getAirtime());
-    		prepStmt.setInt(10, show.daysToNumber());
-    		prepStmt.setDouble(11, show.getRating());
-    		prepStmt.setString(12, show.getImage());
-    		prepStmt.setString(13, show.getNetwork());
+    		
+    		for (TVShow show : shows) {
+        		if (checkExist("tvshows", "name", show.getName()))
+        			if (checkExist("tvshows", "network", show.getNetwork()))
+            			continue;
+	    		conn.setAutoCommit(false);
+	    		prepStmt.setString(1, show.getName());
+	    		prepStmt.setString(2, show.getLanguage());
+	    		prepStmt.setInt(3, show.getType().getValue());
+	    		prepStmt.setInt(4, show.getStatus().getValue());
+	    		prepStmt.setInt(5, show.getRuntime());
+	    		prepStmt.setString(6, show.getPremiereDate());
+	    		prepStmt.setString(7, show.getOfficialSite());
+	    		prepStmt.setString(8, show.getSummary());
+	    		prepStmt.setString(9, show.getAirtime());
+	    		prepStmt.setInt(10, show.daysToNumber());
+	    		prepStmt.setDouble(11, show.getRating());
+	    		prepStmt.setString(12, show.getImage());
+	    		prepStmt.setString(13, show.getNetwork());
+	    		prepStmt.addBatch();
+    		}
+    		prepStmt.executeBatch();
+    		conn.commit();
     	} catch (SQLException e) {
             System.err.println("Error while inserting TVShow");
-            System.err.println("\t" + show.getName() + " " + show.getAirtime());
             //e.printStackTrace();
             return false;
         }
