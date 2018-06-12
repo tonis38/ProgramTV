@@ -51,9 +51,7 @@ public class NTVPlusParser extends Parser {
 		Elements channels = doc.select("div.tv-schedule"); // Extract channels from site
 
 		for (Element channel : channels) {
-			networks.add(new TVNetwork(0, channel.select("div.channel-header--title").text(), null, null)); // Add new
-																											// network
-																											// to set
+			networks.add(new TVNetwork(0, channel.select("div.channel-header--title").text(), null, null)); // Add new network to set
 			String channelname = channel.select("div.channel-header--title").text(); // Get and print channel name
 			Elements programs = channel.select("div.tv-schedule--item"); // Get all visible TV programs
 

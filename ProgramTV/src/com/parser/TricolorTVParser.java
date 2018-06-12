@@ -105,9 +105,10 @@ public class TricolorTVParser extends Parser {
 			String name = program.getString("title").replaceAll("&quot;", "'");
 			String image = program.getString("logo");
 			String summary = program.getString("descr");
-
-			items.add(new TVItem(0, name, 0, 0, airdate, runtime, image, summary, network, null));
-			System.out.println("Adding item......");
+			
+			networks.add(new TVNetwork(0, network, null, null));			//Add network to set
+			items.add(new TVItem(0, name, 0, 0, airdate, runtime, image, summary, network, null));	//Add item to list
+			//System.out.println("Adding item......");
 
 		}
 
