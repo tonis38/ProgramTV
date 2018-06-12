@@ -126,6 +126,7 @@ public class TVScheduleTable extends JTable{
 		tableModel.fireTableStructureChanged();
 		for (int i = 0; i < this.getColumnCount(); i++) {
 			this.getColumnModel().getColumn(i).setPreferredWidth(COLUMN_WIDTH);
+    		this.getColumnModel().getColumn(i).setHeaderValue(columnNames.get(i));
 		}
 	}
 	
@@ -173,13 +174,7 @@ public class TVScheduleTable extends JTable{
 	    }
 	    @Override
 	    public Object getValueAt(int row, int column) {
-	    	if(row == 0) {
-	    		th.getColumnModel().getColumn(column).setHeaderValue(columnNames.get(column));
-	    		th.repaint();
-//	    		return columnNames.get(column);
-	    	}
-	    	
-	        return data.get(column).get(row);
+	    	return data.get(column).get(row);
 	    }
 	    // optional
 	    @Override
