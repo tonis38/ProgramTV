@@ -79,11 +79,13 @@ class TVPanel extends JPanel{
 
 		List<TVItem> itemsToDisplay = new LinkedList<TVItem>();
 		
-		for (TVItem item : itemsList) {
-			if (item.getAirDate().substring(0, 10).equals(d))
-				itemsToDisplay.add(item);
+		if (itemsList != null) {
+			for (TVItem item : itemsList) {
+				if (item.getAirDate().substring(0, 10).equals(d))
+					itemsToDisplay.add(item);
+			}
+			table.UpdateTable(itemsToDisplay, db.selectTVNetworks());
 		}
-		table.UpdateTable(itemsToDisplay, db.selectTVNetworks());
 	}
 	
 	class SynchronizeDatabaseEvent implements ActionListener{

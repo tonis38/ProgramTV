@@ -3,6 +3,7 @@ package com.teamEclipse;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -19,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 public class TVScheduleTable extends JTable{
@@ -28,6 +30,7 @@ public class TVScheduleTable extends JTable{
 	private static final long serialVersionUID = 1L;
 	private static final int COLUMN_WIDTH = 250;
 	private TVTableModel tableModel;
+	private JTableHeader th;
 	
 	public TVScheduleTable() {
 		super();
@@ -35,7 +38,12 @@ public class TVScheduleTable extends JTable{
 		this.setModel(tableModel);
 		this.setDefaultRenderer(String.class, new TVTableCellRenderer());
 		this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		this.setTableHeader(null);
+		th = this.getTableHeader();
+		this.setTableHeader(th);
+
+		th.setDefaultRenderer(new TVHeaderRenderer());
+		th.setReorderingAllowed(false);
+		th.setResizingAllowed(false);
 	}
 	
 	public void UpdateTable(List<TVItem> itemsList, List<TVNetwork> networksList) {
@@ -157,7 +165,7 @@ public class TVScheduleTable extends JTable{
 	    }
 	    @Override
 	    public int getRowCount() {
-	        return data.get(0).size() + 1;
+	        return data.get(0).size();
 	    }
 	    @Override
 	    public int getColumnCount() {
@@ -165,23 +173,27 @@ public class TVScheduleTable extends JTable{
 	    }
 	    @Override
 	    public Object getValueAt(int row, int column) {
-	    	if(row == 0)
-	    		return columnNames.get(column);
+	    	if(row == 0) {
+	    		th.getColumnModel().getColumn(column).setHeaderValue(columnNames.get(column));
+	    		th.repaint();
+//	    		return columnNames.get(column);
+	    	}
 	    	
-	        return data.get(column).get(row-1);
+	        return data.get(column).get(row);
 	    }
 	    // optional
 	    @Override
 	    public void setValueAt(Object aValue, int row, int column) {
-	        data.get(row).set(column, (TVCellData) aValue);
+	    	if(row == 0) 
+	    		columnNames.set(column, (String) aValue);
+	    	
+	        data.get(column).set(row-1, (TVCellData) aValue);
 	    }
 	}
 	
 	class TVTableCellRenderer implements TableCellRenderer{
 		//private static final long serialVersionUID = 1L;
-		private static final int HEADER_HEIGHT = 30;
 		private static final int ROW_HEIGHT = 20;
-		private Color headerBackground;
 		private Color timeBackground;
 		private Color defaultColor;
 
@@ -189,32 +201,14 @@ public class TVScheduleTable extends JTable{
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			defaultColor = table.getBackground();
 			if ( (defaultColor.getRed()*0.299 + defaultColor.getGreen()*0.587 + defaultColor.getBlue()*0.114)/255 < 0.5 ) {	//Background is dark
-				headerBackground = table.getBackground().brighter().brighter();
 				timeBackground = table.getBackground().brighter();
 			}else {	//Background is light
-				headerBackground = table.getBackground().darker().darker();
 				timeBackground = table.getBackground().darker();
 			}
 			
 			Font defaultFont = new Font(new JLabel().getFont().getFontName(), Font.PLAIN, 14);
-			Font headerFont = new Font(new JLabel().getFont().getFontName(), Font.PLAIN, 22);
-
+			
 			if(column == 0) table.setRowHeight(row, ROW_HEIGHT);
-			if (row == 0) {
-				if(column == 0) table.setRowHeight(0, HEADER_HEIGHT);
-				
-				JPanel panel = new JPanel();
-				panel.setOpaque(true);
-				panel.setBackground(headerBackground);
-				panel.setLayout(new BorderLayout());
-				
-				JLabel label = new SmoothLabel((String) value);
-				label.setHorizontalAlignment(row == 0 ? JLabel.CENTER : JLabel.LEFT);
-				label.setFont(headerFont);
-				panel.add(label, BorderLayout.CENTER);
-				panel.setBorder(new MatteBorder(0,1,1,0, table.getGridColor()));
-				return panel;
-			}
 			TVCellData data = (TVCellData) value;
 			
 			JPanel panel = new JPanel();
@@ -250,6 +244,37 @@ public class TVScheduleTable extends JTable{
 			return panel;
 		}
 	}
+	
+	class TVHeaderRenderer implements TableCellRenderer{
+		//private static final long serialVersionUID = 1L;
+		private Color headerBackground;
+		private Color defaultColor;
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			defaultColor = table.getBackground();
+			if ( (defaultColor.getRed()*0.299 + defaultColor.getGreen()*0.587 + defaultColor.getBlue()*0.114)/255 < 0.5 ) {	//Background is dark
+				headerBackground = table.getBackground().brighter().brighter();
+			}else {	//Background is light
+				headerBackground = table.getBackground().darker().darker();
+			}
+			Font headerFont = new Font(new JLabel().getFont().getFontName(), Font.PLAIN, 22);
+
+				
+			JPanel panel = new JPanel();
+			panel.setOpaque(true);
+			panel.setBackground(headerBackground);
+			panel.setLayout(new BorderLayout());
+				
+			JLabel label = new SmoothLabel((String) value);
+			label.setHorizontalAlignment(JLabel.CENTER);
+			label.setFont(headerFont);
+			panel.add(label, BorderLayout.CENTER);
+			panel.setBorder(new MatteBorder(0,1,0,0, table.getGridColor()));
+			return panel;
+		}
+	}
+	
 	class TVCellData{
 		private String time;
 		private String name;
