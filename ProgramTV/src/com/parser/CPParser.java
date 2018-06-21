@@ -19,11 +19,11 @@ import com.teamEclipse.*;
 public class CPParser extends Parser{
 
 	private List<TVItem> items;
-	private Set<TVNetwork> networks;
+	private List<TVNetwork> networks;
 
 	public CPParser() {
 		items = new LinkedList<TVItem>();
-		networks = new HashSet<TVNetwork>();
+		networks = new LinkedList<TVNetwork>();
 	}
 
 	public void ParseData() {
@@ -83,7 +83,7 @@ public class CPParser extends Parser{
 		return items;
 	}
 
-	public Set<TVNetwork> getNetworks() {
+	public List<TVNetwork> getNetworks() {
 		return networks;
 	}
 

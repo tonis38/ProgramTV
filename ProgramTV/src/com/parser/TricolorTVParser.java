@@ -25,11 +25,11 @@ import org.json.JSONObject;
 public class TricolorTVParser extends Parser {
 
 	private List<TVItem> items;
-	private Set<TVNetwork> networks;
+	private List<TVNetwork> networks;
 
 	public TricolorTVParser() {
 		items = new LinkedList<TVItem>();
-		networks = new HashSet<TVNetwork>();
+		networks = new LinkedList<TVNetwork>();
 	}
 
 	private static String readAll(Reader rd) throws IOException {
@@ -120,7 +120,7 @@ public class TricolorTVParser extends Parser {
 		return items;
 	}
 
-	public Set<TVNetwork> getNetworks() {
+	public List<TVNetwork> getNetworks() {
 		return networks;
 	}
 }

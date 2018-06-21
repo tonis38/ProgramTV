@@ -22,7 +22,7 @@ public class ParserDBConnect {
 	        e.printStackTrace();
 		}
 	}
-	public void ExportNetworks(Set<TVNetwork> networks) {
+	public void ExportNetworks(List<TVNetwork> networks) {
 		
 		try {
 			database.insertNetworks(networks);

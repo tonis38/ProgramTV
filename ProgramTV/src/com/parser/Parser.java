@@ -10,6 +10,6 @@ public abstract class Parser {
 
 	abstract void ParseData();
 	abstract List<TVItem> getItems();
-	abstract Set<TVNetwork> getNetworks();
+	abstract List<TVNetwork> getNetworks();
 	
 }

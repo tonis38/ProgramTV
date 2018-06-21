@@ -22,11 +22,11 @@ import com.teamEclipse.*;
 public class OnetParser extends Parser{
 
 	private List<TVItem> items;
-	private Set<TVNetwork> networks;
+	private List<TVNetwork> networks;
 
 	public OnetParser() {
 		items = new LinkedList<TVItem>(); // Create new list for TVItems
-		networks = new HashSet<TVNetwork>();
+		networks = new LinkedList<TVNetwork>();
 	}
 	
 	public void ParseData() {
@@ -50,7 +50,7 @@ public class OnetParser extends Parser{
 				
 				for (Element channel : channels) {
 					Elements programs = channel.select("li"); // Get all visible TV programs
-					networks.add(new TVNetwork(0, channel.select("span.tvName").text(), null, null));
+					if( i == 0 ) networks.add(new TVNetwork(0, channel.select("span.tvName").text(), null, null));
 
 					for (Element program : programs) {
 						String channelname = channel.select("span.tvName").text(); // Get channel name
@@ -90,7 +90,7 @@ public class OnetParser extends Parser{
 		return items;
 	}
 	
-	public Set<TVNetwork> getNetworks(){
+	public List<TVNetwork> getNetworks(){
 		return networks;
 	}
 

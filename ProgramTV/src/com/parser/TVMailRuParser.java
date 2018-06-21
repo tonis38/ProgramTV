@@ -21,11 +21,11 @@ import com.teamEclipse.*;
 public class TVMailRuParser extends Parser {
 
 	private List<TVItem> items;
-	private Set<TVNetwork> networks;
+	private List<TVNetwork> networks;
 
 	public TVMailRuParser() {
 		items = new LinkedList<TVItem>();
-		networks = new HashSet<TVNetwork>();
+		networks = new LinkedList<TVNetwork>();
 	}
 
 	public void ParseData() {
@@ -73,7 +73,7 @@ public class TVMailRuParser extends Parser {
 		return items;
 	}
 
-	public Set<TVNetwork> getNetworks() {
+	public List<TVNetwork> getNetworks() {
 		return networks;
 	}
 

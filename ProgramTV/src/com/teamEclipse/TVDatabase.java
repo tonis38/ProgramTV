@@ -104,7 +104,7 @@ public class TVDatabase {
     	
     	return true;
     }
-    public boolean insertNetworks(Set<TVNetwork> networks) {
+    public boolean insertNetworks(List<TVNetwork> networks) {
     	try {
 	    	PreparedStatement prepStmt = conn.prepareStatement(
 	    				"insert into tvnetworks values (NULL, ?, ?, ?);");
