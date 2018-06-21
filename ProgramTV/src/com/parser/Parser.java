@@ -8,8 +8,8 @@ import com.teamEclipse.TVNetwork;
 
 public abstract class Parser {
 
-	abstract void ParseData();
-	abstract List<TVItem> getItems();
-	abstract List<TVNetwork> getNetworks();
+	public abstract void ParseData();
+	public abstract List<TVItem> getItems();
+	public abstract List<TVNetwork> getNetworks();
 	
 }
